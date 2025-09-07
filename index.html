@@ -19,7 +19,7 @@
     }
 
     .wrap {
-      max-width: 1100px; /* widened to comfortably support two-column desktop layout */
+      max-width: 1100px; /* supports two-column desktop layout */
       margin: 40px auto;
       padding: 18px;
       background: #0b0d12;
@@ -45,7 +45,7 @@
 
     .row { margin-top: 12px; }
 
-    /* Right column container holds choices and Next (on all breakpoints) */
+    /* Right column container holds choices, feedback, and Next */
     .right-col {
       display: flex;
       flex-direction: column;
@@ -60,7 +60,16 @@
       gap: 10px;
     }
 
-    /* Buttons and inputs */
+    /* Feedback prominence */
+    .feedback {
+      color: #e7ecf3;
+      font-size: 18px;        /* Larger text size for emphasis */
+      line-height: 1.4;
+      font-weight: 600;       /* Slightly bolder for significance */
+      min-height: 24px;       /* reserve space even when empty */
+    }
+
+    /* Buttons */
     .btn {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.12);
@@ -89,7 +98,6 @@
       font-size: 16px;
     }
 
-    .feedback { min-height: 24px; margin-top: 8px; color: #e7ecf3; }
     .hidden { display: none; }
 
     /* Responsive canvas in layout; drawing buffer handled by JS */
@@ -108,17 +116,15 @@
     @media (min-width: 992px) {
       .wrap {
         display: grid;
-        grid-template-columns: minmax(520px, 1fr) 380px; /* left = canvas, right = choices/Next */
+        grid-template-columns: minmax(520px, 1fr) 380px; /* left = canvas, right = choices/feedback/Next */
         grid-template-areas:
           "header header"
-          "canvas choices"
-          "feedback choices";
+          "canvas choices";
         column-gap: 16px;
         row-gap: 12px;
       }
       .header { grid-area: header; margin-bottom: 0; }
       .canvas-row { grid-area: canvas; }
-      .feedback { grid-area: feedback; }
       .right-col { grid-area: choices; margin-top: 0; }
       /* On desktop, keep choices one-per-row in the right column */
       .choices { grid-template-columns: 1fr; align-content: start; }
@@ -136,13 +142,12 @@
       <canvas id="viewer" width="520" height="300"></canvas>
     </div>
 
-    <!-- Right side column: choices + Next button -->
+    <!-- Right side column: choices + feedback (larger) + Next button -->
     <div class="right-col" id="rightCol">
       <div class="choices" id="choices" role="group" aria-label="Answer choices"></div>
+      <div class="feedback" id="feedback" aria-live="polite" role="status"></div>
       <button id="next" class="next hidden">Next</button>
     </div>
-
-    <div class="row feedback" id="feedback" aria-live="polite" role="status"></div>
   </div>
 
   <script>
@@ -246,6 +251,7 @@
 
     function loadQuestion() {
       feedbackEl.textContent = '';
+      feedbackEl.style.color = '#e7ecf3';
       choicesEl.innerHTML = '';
       nextBtn.classList.add('hidden');
 
