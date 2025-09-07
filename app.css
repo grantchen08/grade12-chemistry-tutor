@@ -1,0 +1,242 @@
+/* Color tokens updated to use the requested palette:
+   #C7D11D (yellow-green), #40A02B (green), #287DB0 (blue), #151515 (near-black) */
+:root {
+  /* Neutrals (light) */
+  --color-bg: hsl(220 20% 98%);
+  --color-surface: hsl(0 0% 100%);
+  --color-border: hsl(220 15% 88%);
+  --color-text: hsl(220 20% 18%);
+  --color-muted: hsl(220 10% 45%);
+
+  /* Accent → BLUE #287DB0 */
+  --color-accent: #287DB0;
+  --color-accent-hover: #23709D;     /* slightly darker */
+  --color-accent-soft: #E6F2F9;      /* very light blue tint */
+  --color-accent-contrast: #ffffff;
+
+  /* Status → SUCCESS uses GREEN #40A02B */
+  --color-success: #40A02B;
+  --color-success-soft: #E7F4E4;
+
+  /* Error left as-is */
+  --color-error: hsl(0 75% 45%);
+  --color-error-soft: hsl(0 75% 95%);
+
+  /* Focus ring matches accent */
+  --color-focus: #287DB0;
+
+  /* Component specifics */
+  --btn-bg: hsl(220 15% 97%);
+  --btn-bg-hover-border: var(--color-accent);
+
+  /* Use the YELLOW-GREEN #C7D11D softly for the Next button background */
+  --next-bg: #F3F7C0;        /* soft tint from #C7D11D */
+  --next-bg-hover: #E7F190;  /* slightly stronger tint */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Neutrals (dark) */
+    --color-bg: #151515;                /* near-black from palette */
+    --color-surface: hsl(220 15% 12%);
+    --color-border: hsl(220 10% 22%);
+    --color-text: hsl(220 25% 92%);
+    --color-muted: hsl(220 10% 65%);
+
+    /* Accent → BLUE #287DB0 (slightly lifted on hover) */
+    --color-accent: #287DB0;
+    --color-accent-hover: #2F8BC0;
+    --color-accent-soft: #1B2D3A;   /* dark soft-blue surface */
+    --color-accent-contrast: #ffffff;
+
+    /* Success → GREEN #40A02B */
+    --color-success: #40A02B;
+    --color-success-soft: #1E2A1E;
+
+    /* Error */
+    --color-error: hsl(0 75% 58%);
+    --color-error-soft: hsl(0 75% 18%);
+
+    /* Focus */
+    --color-focus: #287DB0;
+
+    /* Components */
+    --btn-bg: hsl(220 12% 16%);
+    --btn-bg-hover-border: var(--color-accent);
+
+    /* Softened yellow-green for dark surfaces */
+    --next-bg: #2E2F1A;       /* muted dark tint from #C7D11D */
+    --next-bg-hover: #3A3C21;
+  }
+}
+
+/* Base and safe-area support */
+body {
+  margin: 0;
+  font-family: system-ui, Arial, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  padding-left: max(0px, env(safe-area-inset-left));
+  padding-right: max(0px, env(safe-area-inset-right));
+  padding-bottom: max(0px, env(safe-area-inset-bottom));
+}
+
+/* Level Select Screen */
+#levelSelectScreen {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  display: none;
+}
+#levelSelectScreen h2 {
+  margin: 0 0 12px 0;
+  font-size: clamp(18px, 3.5vw, 28px);
+  line-height: 1.2;
+}
+#levelSelectScreen .grid {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 12px;
+}
+.level-tile {
+  border: 1px solid var(--color-border); border-radius: 10px; padding: 12px;
+  background: var(--color-surface); cursor: pointer; text-align: left;
+}
+.level-tile.locked { opacity: 0.6; cursor: not-allowed; }
+.level-title { font-weight: 700; margin-bottom: 6px; }
+.level-meta { font-size: 12px; color: var(--color-muted); }
+.stars { color: gold; letter-spacing: 2px; }
+
+.wrap {
+  max-width: 1100px; /* supports two-column desktop layout */
+  margin: 40px auto;
+  padding: 18px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* Responsive, clamped title size */
+.header h1 {
+  margin: 0;
+  font-size: clamp(18px, 3.5vw, 28px);
+  line-height: 1.2;
+}
+
+.score { color: var(--color-muted); }
+
+.row { margin-top: 12px; }
+
+/* Right column container holds choices, feedback, and Next */
+.right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px; /* spacing when stacked on mobile/tablet */
+}
+
+/* Choices grid (mobile/tablet default) */
+.choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+/* Feedback prominence */
+.feedback {
+  color: var(--color-text);
+  font-size: 18px;        /* Larger text size for emphasis */
+  line-height: 1.4;
+  font-weight: 600;       /* Slightly bolder for significance */
+  min-height: 24px;       /* reserve space even when empty */
+}
+
+/* Buttons */
+.btn {
+  background: var(--btn-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.3;
+  transition: border-color 120ms ease;
+}
+.btn:hover { border-color: var(--btn-bg-hover-border); }
+.btn:disabled { opacity: 0.7; cursor: not-allowed; }
+.btn.correct {
+  border-color: var(--color-success);
+  background: var(--color-success-soft);
+}
+.btn.incorrect {
+  border-color: var(--color-error);
+  background: var(--color-error-soft);
+}
+
+.next {
+  align-self: stretch;
+  background: var(--next-bg);
+  border: 1px solid var(--color-accent);
+  color: var(--color-text);
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 16px;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+.next:hover {
+  background: var(--next-bg-hover);
+  border-color: var(--color-accent-hover);
+}
+
+.hidden { display: none; }
+
+/* Responsive canvas in layout; drawing buffer handled by JS */
+canvas#viewer { width: 100%; height: auto; display: block; }
+
+/* Visible focus styles for keyboard users */
+.btn:focus, .next:focus, .level-tile:focus {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.btn:focus-visible, .next:focus-visible, .level-tile:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Mobile spacing refinements */
+@media (max-width: 620px) {
+  .wrap { margin: 16px; padding: 14px; }
+  #levelSelectScreen { margin: 16px; padding: 14px; }
+}
+
+/* Desktop two-column layout */
+@media (min-width: 992px) {
+  .wrap {
+    display: grid;
+    grid-template-columns: minmax(520px, 1fr) 380px; /* left = canvas, right = choices/feedback/Next */
+    grid-template-areas:
+      "header header"
+      "canvas choices";
+    column-gap: 16px;
+    row-gap: 12px;
+  }
+  .header { grid-area: header; margin-bottom: 0; }
+  .canvas-row { grid-area: canvas; }
+  .right-col { grid-area: choices; margin-top: 0; }
+  /* On desktop, keep choices one-per-row in the right column */
+  .choices { grid-template-columns: 1fr; align-content: start; }
+}
