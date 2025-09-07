@@ -53,6 +53,8 @@
       padding: 8px 10px;
       font-size: 16px;
     }
+    /* Phase 1: make the canvas responsive in layout; drawing buffer handled by JS */
+    canvas#viewer { width: 100%; height: auto; display: block; }
   </style>
 </head>
 <body>
@@ -94,6 +96,7 @@
 
     // Utilities
     function shuffle(arr) { return arr.map(v => [Math.random(), v]).sort((a,b)=>a[0]-b[0]).map(x => x[1]); }
+    function debounce(fn, ms = 150) { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); }; }
 
     // State
     let score = 0;
@@ -123,6 +126,49 @@
       console.error('ChemDoodle init failed:', e);
     }
 
+    // Phase 1: DPR-aware, responsive canvas sizing
+    const initialCanvas = document.getElementById('viewer');
+    const initialW = parseInt(initialCanvas.getAttribute('width'), 10) || 520;
+    const initialH = parseInt(initialCanvas.getAttribute('height'), 10) || 300;
+    const initialAspect = initialH / initialW;
+
+    function sizeCanvas() {
+      const canvas = document.getElementById('viewer');
+      if (!canvas) return;
+      const container = canvas.parentElement || document.body;
+      const containerWidth = Math.max(280, Math.floor(container.clientWidth || initialW));
+      const w = containerWidth;
+      const h = Math.round(w * initialAspect);
+
+      // Set CSS size (layout)
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+
+      // Device pixel ratio scaling for crispness
+      const dpr = window.devicePixelRatio || 1;
+      const bufferW = Math.round(w * dpr);
+      const bufferH = Math.round(h * dpr);
+
+      // Resize ChemDoodle viewer to CSS pixels
+      if (window.viewer && typeof viewer.resize === 'function') {
+        viewer.resize(w, h);
+      }
+
+      // Ensure drawing buffer matches DPR, and scale context
+      if (canvas.width !== bufferW) canvas.width = bufferW;
+      if (canvas.height !== bufferH) canvas.height = bufferH;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      if (window.viewer && typeof viewer.repaint === 'function') {
+        viewer.repaint();
+      }
+    }
+
+    window.addEventListener('resize', debounce(sizeCanvas, 150));
+
     function applyLabelMode(mode) {
       viewer.styles.atoms_displayAllCarbonLabels_2D = (mode === 'all');
       viewer.styles.atoms_displayTerminalCarbonLabels_2D = (mode === 'terminal');
@@ -150,6 +196,9 @@
       }
       const q = questions[idx];
       drawMol(q.mol);
+
+      // Phase 1: ensure canvas fits current layout after drawing
+      sizeCanvas();
 
       const options = shuffle([q.name, ...q.distractors]);
       options.forEach(opt => {
@@ -232,6 +281,8 @@
         questions = [];
       }
 
+      // Phase 1: ensure canvas is sized at startup
+      sizeCanvas();
       loadQuestion();
     }
 
