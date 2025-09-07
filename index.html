@@ -19,7 +19,7 @@
   </div>
 
   <!-- Game Screen -->
-  <div class="wrap" style="display:none">
+  <div class="wrap hidden">
     <div class="header">
       <h1>Alkane Naming Quiz</h1>
       <div class="score">Score: <span id="score">0</span></div>
@@ -34,7 +34,7 @@
       <div class="feedback" id="feedback" aria-live="polite" role="status"></div>
       <button id="next" class="next hidden">Next</button>
 
-      <!-- Removed inline display:flex to let .hidden work properly -->
+      <!-- Hidden until end-of-level -->
       <div id="postActions" class="hidden">
         <button id="replayBtn" class="next">Replay Level</button>
         <button id="selectBtn" class="next">Level Select</button>
@@ -145,7 +145,6 @@
         lastPlayedAt: Date.now()
       };
 
-      // XP and simple badges
       let xpGain = 10; // base per completion
       if (improvements.newStars) xpGain += 15;
       if (improvements.newBestPct) xpGain += 10;
@@ -223,7 +222,6 @@
         `;
         btn.addEventListener('click', () => {
           start(i);
-          showGame();
         });
         levelGrid.appendChild(btn);
       }
@@ -232,19 +230,18 @@
         const p = getProfile();
         const fallback = isLevelUnlocked(p.lastLevel) ? p.lastLevel : 1;
         start(fallback || 1);
-        showGame();
       };
     }
 
     function showLevelSelect() {
       document.getElementById('levelSelectScreen').style.display = 'block';
-      document.querySelector('.wrap').style.display = 'none';
+      document.querySelector('.wrap').classList.add('hidden');
       renderLevelGrid();
     }
 
     function showGame() {
       document.getElementById('levelSelectScreen').style.display = 'none';
-      document.querySelector('.wrap').style.display = 'block';
+      document.querySelector('.wrap').classList.remove('hidden');
     }
 
     /**********************************************************
@@ -278,7 +275,7 @@
     const selectBtn = document.getElementById('selectBtn');
     const postActions = document.getElementById('postActions');
 
-    // Attach handlers once so buttons are always responsive when visible
+    // Always attach handlers
     replayBtn.addEventListener('click', () => start(currentLevel));
     selectBtn.addEventListener('click', showLevelSelect);
 
@@ -434,11 +431,7 @@
         }
       };
 
-      // Show secondary actions
       postActions.classList.remove('hidden');
-      // If you want these laid out horizontally, add a CSS rule in app.css:
-      // #postActions { display:flex; gap:10px; flex-wrap:wrap; }
-
       nextBtn.focus();
     }
 
