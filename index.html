@@ -9,7 +9,7 @@
   <script src="./ChemDoodleWeb.js"></script>
 </head>
 <body>
-  <!-- Phase 1: Level Select Screen -->
+  <!-- Level Select Screen -->
   <div id="levelSelectScreen">
     <h2>Select Level</h2>
     <div id="levelGrid" class="grid" role="list" aria-label="Available levels"></div>
@@ -19,7 +19,7 @@
   </div>
 
   <!-- Game Screen -->
-  <div class="wrap">
+  <div class="wrap" style="display:none">
     <div class="header">
       <h1>Alkane Naming Quiz</h1>
       <div class="score">Score: <span id="score">0</span></div>
@@ -29,26 +29,34 @@
       <canvas id="viewer" width="520" height="300"></canvas>
     </div>
 
-    <!-- Right side column: choices + feedback (larger) + Next button -->
     <div class="right-col" id="rightCol">
       <div class="choices" id="choices" role="group" aria-label="Answer choices"></div>
       <div class="feedback" id="feedback" aria-live="polite" role="status"></div>
       <button id="next" class="next hidden">Next</button>
+
+      <!-- Removed inline display:flex to let .hidden work properly -->
+      <div id="postActions" class="hidden">
+        <button id="replayBtn" class="next">Replay Level</button>
+        <button id="selectBtn" class="next">Level Select</button>
+      </div>
     </div>
   </div>
 
   <script>
     /**********************************************************
-     * Phase 0 additions: storage, stars/XP, timer integration
+     * Storage, stars/XP, timer integration (Phase 0 foundation)
      **********************************************************/
-    // Config for star thresholds and (optional) time targets
     const levelConfig = {
       default: { targetTimeMs: 150000, twoStarPct: 80, threeStarPct: 95 },
       1: { targetTimeMs: 120000 },
-      2: { targetTimeMs: 150000 }
+      2: { targetTimeMs: 150000 },
+      3: { targetTimeMs: 150000 },
+      4: { targetTimeMs: 150000 },
+      5: { targetTimeMs: 180000 },
+      6: { targetTimeMs: 180000 },
+      7: { targetTimeMs: 180000 }
     };
 
-    // Minimal "profile" persistence in localStorage
     const STORAGE_KEY = 'alkaneQuiz.v1.profile';
 
     function getProfile() {
@@ -101,7 +109,6 @@
       return stars;
     }
 
-    // Record a single level result and award XP; returns summary for UI
     function recordLevelResult(levelId, { score, maxScore, timeMs }, config) {
       const profile = getProfile();
       updateDaily(profile);
@@ -164,9 +171,9 @@
     }
 
     /**********************************************************
-     * Phase 1: Level Select (2 levels), gating, deep links
+     * Phase 2: Level Select scaled to 7 levels + replay UX
      **********************************************************/
-    const TOTAL_LEVELS = 2;
+    const TOTAL_LEVELS = 7;
     const levelGrid = document.getElementById('levelGrid');
     const continueBtn = document.getElementById('continueBtn');
 
@@ -194,7 +201,7 @@
       for (let i = 1; i <= TOTAL_LEVELS; i++) {
         const s = profile.levels[String(i)] || {};
         const locked = !isLevelUnlocked(i);
-        const stars = '★'.repeat(s.stars || 0) + '☆'.repeat(3 - (s.stars || 0));
+        const starsText = '★'.repeat(s.stars || 0) + '☆'.repeat(3 - (s.stars || 0));
         const best = s.bestPct ? `${s.bestPct}%` : '-';
         const time = s.bestTimeMs ? msToClock(s.bestTimeMs) : '-';
         const attempts = s.attempts || 0;
@@ -210,7 +217,7 @@
         );
         btn.innerHTML = `
           <div class="level-title">Level ${i}</div>
-          <div class="stars" aria-hidden="true">${stars}</div>
+          <div class="stars" aria-hidden="true">${starsText}</div>
           <div class="level-meta">Best: ${best} • Time: ${time} • Attempts: ${attempts}</div>
           ${locked ? `<div class="level-meta">Unlock: earn 1★ in Level ${i-1}</div>` : ''}
         `;
@@ -240,7 +247,9 @@
       document.querySelector('.wrap').style.display = 'block';
     }
 
-    // Validator for MOL strings
+    /**********************************************************
+     * Quiz logic with multi-level support
+     **********************************************************/
     function validateMolString(s) {
       if (typeof s !== 'string') return 'MOL is not a string';
       const lines = s.split(/\r?\n/);
@@ -253,21 +262,25 @@
       return null;
     }
 
-    // Utilities
     function shuffle(arr) { return arr.map(v => [Math.random(), v]).sort((a,b)=>a[0]-b[0]).map(x => x[1]); }
     function debounce(fn, ms = 150) { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); }; }
 
-    // State
     let score = 0;
     let idx = 0;
     let questions = [];
     let currentLevel = 1;
 
-    // UI elements
     const scoreEl = document.getElementById('score');
     const choicesEl = document.getElementById('choices');
     const feedbackEl = document.getElementById('feedback');
     const nextBtn = document.getElementById('next');
+    const replayBtn = document.getElementById('replayBtn');
+    const selectBtn = document.getElementById('selectBtn');
+    const postActions = document.getElementById('postActions');
+
+    // Attach handlers once so buttons are always responsive when visible
+    replayBtn.addEventListener('click', () => start(currentLevel));
+    selectBtn.addEventListener('click', showLevelSelect);
 
     // Viewer setup
     let viewer;
@@ -281,14 +294,12 @@
       viewer.styles.bonds_hashSpacing_2D = 2.5;
       viewer.styles.atoms_font_size_2D = 12;
       viewer.styles.atoms_font_families_2D = ['Helvetica','Arial','sans-serif'];
-      // Always display all carbon labels
       viewer.styles.atoms_displayAllCarbonLabels_2D = true;
       viewer.styles.atoms_displayTerminalCarbonLabels_2D = false;
     } catch (e) {
       console.error('ChemDoodle init failed:', e);
     }
 
-    // DPR-aware, responsive canvas sizing
     const initialCanvas = document.getElementById('viewer');
     const initialW = parseInt(initialCanvas.getAttribute('width'), 10) || 520;
     const initialH = parseInt(initialCanvas.getAttribute('height'), 10) || 300;
@@ -302,21 +313,17 @@
       const w = containerWidth;
       const h = Math.round(w * initialAspect);
 
-      // Set CSS size (layout)
       canvas.style.width = w + 'px';
       canvas.style.height = h + 'px';
 
-      // Device pixel ratio scaling for crispness
       const dpr = window.devicePixelRatio || 1;
       const bufferW = Math.round(w * dpr);
       const bufferH = Math.round(h * dpr);
 
-      // Resize ChemDoodle viewer to CSS pixels
       if (window.viewer && typeof viewer.resize === 'function') {
         viewer.resize(w, h);
       }
 
-      // Ensure drawing buffer matches DPR, and scale context
       if (canvas.width !== bufferW) canvas.width = bufferW;
       if (canvas.height !== bufferH) canvas.height = bufferH;
       const ctx = canvas.getContext('2d');
@@ -335,7 +342,7 @@
       const err = validateMolString(molString);
       if (err) { console.error('Invalid MOL:', err); return; }
       const mol = ChemDoodle.readMOL(molString);
-      if (mol && mol.scaleToAverageBondLength) mol.scaleToAverageBondLength(40); // clearer scaling
+      if (mol && mol.scaleToAverageBondLength) mol.scaleToAverageBondLength(40);
       viewer.loadMolecule(mol);
     }
 
@@ -344,6 +351,7 @@
       feedbackEl.style.color = 'var(--color-text)';
       choicesEl.innerHTML = '';
       nextBtn.classList.add('hidden');
+      postActions.classList.add('hidden');
 
       if (idx >= questions.length) {
         end();
@@ -351,8 +359,6 @@
       }
       const q = questions[idx];
       drawMol(q.mol);
-
-      // Ensure canvas fits current layout after drawing
       sizeCanvas();
 
       const options = shuffle([q.name, ...q.distractors]);
@@ -361,7 +367,6 @@
         btn.className = 'btn';
         btn.textContent = opt;
         btn.addEventListener('click', () => checkAnswer(q, opt, btn));
-        // Accessibility hint
         btn.setAttribute('aria-pressed', 'false');
         btn.addEventListener('click', () => btn.setAttribute('aria-pressed', 'true'), { once: true });
         choicesEl.appendChild(btn);
@@ -388,8 +393,6 @@
 
       nextBtn.textContent = (idx === questions.length - 1) ? 'See Final Score' : 'Next';
       nextBtn.classList.remove('hidden');
-
-      // Move focus to Next for better keyboard/screen reader flow
       nextBtn.focus();
     }
 
@@ -397,30 +400,52 @@
       const total = questions.length;
       const pct = total ? Math.round((score / total) * 100) : 0;
 
-      // Phase 0: compute elapsed time and record result with stars/XP
       const timeMs = window._runStartedAt ? (Date.now() - window._runStartedAt) : null;
       const res = recordLevelResult(String(currentLevel), { score, maxScore: total, timeMs }, levelConfig);
+
+      const imp = res.improvements;
+      const improvementsText = [
+        imp.newStars ? `New star rating: ${res.profile.levels[currentLevel].stars}★` : '',
+        imp.newBestPct ? `New best accuracy: ${res.profile.levels[currentLevel].bestPct}%` : '',
+        imp.newBestTime ? `New best time: ${msToClock(res.profile.levels[currentLevel].bestTimeMs)}` : ''
+      ].filter(Boolean).join(' • ');
 
       choicesEl.innerHTML = '';
       feedbackEl.style.color = 'var(--color-text)';
       feedbackEl.innerHTML = `
-        Quiz complete. You scored <strong>${score} / ${total}</strong> (${pct}%).
+        Quiz complete. Score: <strong>${score} / ${total}</strong> (${pct}%)
         <br/>Time: ${msToClock(timeMs)} • Stars: ${'★'.repeat(res.stars)}${'☆'.repeat(3 - res.stars)} • XP +${res.xpGain}
+        ${improvementsText ? `<br/><span style="color: var(--color-success)">${improvementsText}</span>` : ''}
       `;
-      nextBtn.textContent = 'Play Again';
-      nextBtn.classList.remove('hidden');
 
-      // Focus the Play Again button
+      const isLast = currentLevel >= TOTAL_LEVELS;
+      nextBtn.textContent = isLast ? 'Level Select' : 'Next Level';
+      nextBtn.classList.remove('hidden');
+      nextBtn.onclick = () => {
+        if (isLast) {
+          showLevelSelect();
+        } else {
+          const nextLevel = currentLevel + 1;
+          if (!isLevelUnlocked(nextLevel)) {
+            showLevelSelect();
+            return;
+          }
+          start(nextLevel);
+        }
+      };
+
+      // Show secondary actions
+      postActions.classList.remove('hidden');
+      // If you want these laid out horizontally, add a CSS rule in app.css:
+      // #postActions { display:flex; gap:10px; flex-wrap:wrap; }
+
       nextBtn.focus();
     }
 
     nextBtn.addEventListener('click', () => {
-      if (idx >= questions.length) {
-        start(currentLevel); // restart same level
-      } else {
-        idx++;
-        loadQuestion();
-      }
+      if (idx >= questions.length) return;
+      idx++;
+      loadQuestion();
     });
 
     async function fetchQuestions(url) {
@@ -439,7 +464,6 @@
     }
 
     async function start(level = 1) {
-      // Guard: if level is locked, show level select
       if (!isLevelUnlocked(level)) {
         showLevelSelect();
         return;
@@ -448,7 +472,6 @@
       currentLevel = level;
       setUrlLevel(level);
 
-      // Phase 0: start run timer
       window._runStartedAt = Date.now();
 
       score = 0;
@@ -465,13 +488,15 @@
         questions = [];
       }
 
-      // Ensure canvas is sized at startup
+      showGame();
       sizeCanvas();
       loadQuestion();
     }
 
     // Keyboard shortcuts: 1–4 answers, Enter for Next
     document.addEventListener('keydown', (e) => {
+      if (document.getElementById('levelSelectScreen').style.display !== 'none') return;
+
       const buttons = [...choicesEl.querySelectorAll('button')];
       if (!buttons.length) return;
       if (e.key === 'Enter' && !nextBtn.classList.contains('hidden')) {
@@ -488,7 +513,6 @@
     document.addEventListener('DOMContentLoaded', () => {
       const urlLevel = getUrlLevel();
       if (urlLevel && isLevelUnlocked(urlLevel)) {
-        showGame();
         start(urlLevel);
       } else {
         showLevelSelect();
