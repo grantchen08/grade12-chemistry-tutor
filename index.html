@@ -241,6 +241,130 @@
   </div>
 
   <script>
+    /**********************************************************
+     * Phase 0 additions: storage, stars/XP, timer integration
+     **********************************************************/
+    // Config for star thresholds and (optional) time targets
+    const levelConfig = {
+      default: { targetTimeMs: 150000, twoStarPct: 80, threeStarPct: 95 },
+      1: { targetTimeMs: 120000 } // override for Level 1 if desired
+    };
+
+    // Minimal "profile" persistence in localStorage
+    const STORAGE_KEY = 'alkaneQuiz.v1.profile';
+
+    function getProfile() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch (e) {
+        console.warn('Failed to read profile; using defaults', e);
+      }
+      return {
+        version: 1,
+        lastLevel: 1,
+        levels: {},
+        badges: {},
+        xp: 0,
+        daily: { lastActive: null, streak: 0 }
+      };
+    }
+
+    function saveProfile(p) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+      } catch (e) {
+        console.warn('Failed to save profile', e);
+      }
+    }
+
+    function nowISODate() { return new Date().toISOString().slice(0, 10); }
+
+    function updateDaily(profile) {
+      const today = nowISODate();
+      if (profile.daily.lastActive !== today) {
+        const y = new Date(today);
+        y.setDate(y.getDate() - 1);
+        const yISO = y.toISOString().slice(0, 10);
+        profile.daily.streak = (profile.daily.lastActive === yISO) ? (profile.daily.streak + 1) : 1;
+        profile.daily.lastActive = today;
+      }
+    }
+
+    function computeStars({ pct, timeMs, targetTimeMs, twoStarPct = 80, threeStarPct = 95 }) {
+      let stars = 0;
+      if (pct > 0) stars = 1; // completed
+      if (pct >= twoStarPct || (targetTimeMs && timeMs && timeMs <= targetTimeMs)) {
+        stars = Math.max(stars, 2);
+      }
+      if ((pct >= threeStarPct) && (targetTimeMs && timeMs && timeMs <= targetTimeMs)) {
+        stars = Math.max(stars, 3);
+      }
+      return stars;
+    }
+
+    // Record a single level result and award XP; returns summary for UI
+    function recordLevelResult(levelId, { score, maxScore, timeMs }, config) {
+      const profile = getProfile();
+      updateDaily(profile);
+      profile.lastLevel = Number(levelId);
+
+      const pct = Math.round((score / Math.max(1, maxScore)) * 100);
+      const cfg = config[levelId] || config.default || {};
+      const stars = computeStars({
+        pct,
+        timeMs,
+        targetTimeMs: cfg.targetTimeMs,
+        twoStarPct: cfg.twoStarPct,
+        threeStarPct: cfg.threeStarPct
+      });
+
+      const prev = profile.levels[levelId] || {
+        bestScore: 0, maxScore, bestPct: 0, bestTimeMs: null, stars: 0, attempts: 0, lastPlayedAt: 0
+      };
+
+      const improvements = {
+        newBestScore: score > (prev.bestScore || 0),
+        newBestPct: pct > (prev.bestPct || 0),
+        newBestTime: prev.bestTimeMs ? (timeMs && timeMs < prev.bestTimeMs) : !!timeMs,
+        newStars: stars > (prev.stars || 0)
+      };
+
+      profile.levels[levelId] = {
+        bestScore: Math.max(prev.bestScore || 0, score),
+        maxScore,
+        bestPct: Math.max(prev.bestPct || 0, pct),
+        bestTimeMs: (prev.bestTimeMs && timeMs) ? Math.min(prev.bestTimeMs, timeMs) : (prev.bestTimeMs || timeMs || null),
+        stars: Math.max(prev.stars || 0, stars),
+        attempts: (prev.attempts || 0) + 1,
+        lastPlayedAt: Date.now()
+      };
+
+      // XP and simple badges
+      let xpGain = 10; // base per completion
+      if (improvements.newStars) xpGain += 15;
+      if (improvements.newBestPct) xpGain += 10;
+      if (improvements.newBestTime) xpGain += 10;
+      if (pct === 100) {
+        xpGain += 20;
+        profile.badges.perfect = (profile.badges.perfect || 0) + 1;
+      }
+      if (profile.daily.streak >= 3) xpGain += 5;
+
+      profile.xp += xpGain;
+      saveProfile(profile);
+
+      return { profile, pct, stars, xpGain, improvements };
+    }
+
+    function msToClock(ms) {
+      if (!ms && ms !== 0) return '-';
+      const s = Math.floor(ms / 1000);
+      const m = Math.floor(s / 60);
+      const r = s % 60;
+      return `${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')}`;
+    }
+
     // Validator for MOL strings
     function validateMolString(s) {
       if (typeof s !== 'string') return 'MOL is not a string';
@@ -262,6 +386,7 @@
     let score = 0;
     let idx = 0;
     let questions = [];
+    let currentLevel = 1; // Phase 0: single level
 
     // UI elements
     const scoreEl = document.getElementById('score');
@@ -396,9 +521,17 @@
     function end() {
       const total = questions.length;
       const pct = total ? Math.round((score / total) * 100) : 0;
+
+      // Phase 0: compute elapsed time and record result with stars/XP
+      const timeMs = window._runStartedAt ? (Date.now() - window._runStartedAt) : null;
+      const res = recordLevelResult(String(currentLevel), { score, maxScore: total, timeMs }, levelConfig);
+
       choicesEl.innerHTML = '';
       feedbackEl.style.color = 'var(--color-text)';
-      feedbackEl.innerHTML = `Quiz complete. You scored <strong>${score} / ${total}</strong> (${pct}%).`;
+      feedbackEl.innerHTML = `
+        Quiz complete. You scored <strong>${score} / ${total}</strong> (${pct}%).
+        <br/>Time: ${msToClock(timeMs)} • Stars: ${'★'.repeat(res.stars)}${'☆'.repeat(3 - res.stars)} • XP +${res.xpGain}
+      `;
       nextBtn.textContent = 'Play Again';
       nextBtn.classList.remove('hidden');
 
@@ -431,6 +564,9 @@
     }
 
     async function start() {
+      // Phase 0: start run timer
+      window._runStartedAt = Date.now();
+
       score = 0;
       scoreEl.textContent = score;
       idx = 0;
@@ -464,7 +600,7 @@
       }
     });
 
-    // Kick off
+    // Kick off (Phase 0: behavior unchanged, auto-start Level 1)
     start();
   </script>
 </body>
