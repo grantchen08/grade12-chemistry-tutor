@@ -90,6 +90,35 @@
       padding-bottom: max(0px, env(safe-area-inset-bottom));
     }
 
+    /* Level Select Screen */
+    #levelSelectScreen {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 18px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      display: none;
+    }
+    #levelSelectScreen h2 {
+      margin: 0 0 12px 0;
+      font-size: clamp(18px, 3.5vw, 28px);
+      line-height: 1.2;
+    }
+    #levelSelectScreen .grid {
+      display: grid; gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-top: 12px;
+    }
+    .level-tile {
+      border: 1px solid var(--color-border); border-radius: 10px; padding: 12px;
+      background: var(--color-surface); cursor: pointer; text-align: left;
+    }
+    .level-tile.locked { opacity: 0.6; cursor: not-allowed; }
+    .level-title { font-weight: 700; margin-bottom: 6px; }
+    .level-meta { font-size: 12px; color: var(--color-muted); }
+    .stars { color: gold; letter-spacing: 2px; }
+
     .wrap {
       max-width: 1100px; /* supports two-column desktop layout */
       margin: 40px auto;
@@ -188,11 +217,11 @@
     canvas#viewer { width: 100%; height: auto; display: block; }
 
     /* Visible focus styles for keyboard users */
-    .btn:focus, .next:focus {
+    .btn:focus, .next:focus, .level-tile:focus {
       outline: 2px solid var(--color-focus);
       outline-offset: 2px;
     }
-    .btn:focus-visible, .next:focus-visible {
+    .btn:focus-visible, .next:focus-visible, .level-tile:focus-visible {
       outline: 3px solid var(--color-focus);
       outline-offset: 2px;
     }
@@ -200,6 +229,7 @@
     /* Mobile spacing refinements */
     @media (max-width: 620px) {
       .wrap { margin: 16px; padding: 14px; }
+      #levelSelectScreen { margin: 16px; padding: 14px; }
     }
 
     /* Desktop two-column layout */
@@ -222,6 +252,16 @@
   </style>
 </head>
 <body>
+  <!-- Phase 1: Level Select Screen -->
+  <div id="levelSelectScreen">
+    <h2>Select Level</h2>
+    <div id="levelGrid" class="grid" role="list" aria-label="Available levels"></div>
+    <div style="margin-top:12px; display:flex; gap:10px;">
+      <button id="continueBtn" class="next">Continue</button>
+    </div>
+  </div>
+
+  <!-- Game Screen -->
   <div class="wrap">
     <div class="header">
       <h1>Alkane Naming Quiz</h1>
@@ -247,7 +287,8 @@
     // Config for star thresholds and (optional) time targets
     const levelConfig = {
       default: { targetTimeMs: 150000, twoStarPct: 80, threeStarPct: 95 },
-      1: { targetTimeMs: 120000 } // override for Level 1 if desired
+      1: { targetTimeMs: 120000 },
+      2: { targetTimeMs: 150000 }
     };
 
     // Minimal "profile" persistence in localStorage
@@ -365,6 +406,83 @@
       return `${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')}`;
     }
 
+    /**********************************************************
+     * Phase 1: Level Select (2 levels), gating, deep links
+     **********************************************************/
+    const TOTAL_LEVELS = 2;
+    const levelGrid = document.getElementById('levelGrid');
+    const continueBtn = document.getElementById('continueBtn');
+
+    function getUrlLevel() {
+      const params = new URLSearchParams(location.search);
+      const lvl = parseInt(params.get('level'), 10);
+      return Number.isFinite(lvl) ? lvl : null;
+    }
+
+    function setUrlLevel(level) {
+      const params = new URLSearchParams(location.search);
+      params.set('level', String(level));
+      history.replaceState({}, '', `${location.pathname}?${params.toString()}`);
+    }
+
+    function isLevelUnlocked(level) {
+      if (level <= 1) return true;
+      const prev = getProfile().levels[String(level - 1)];
+      return !!(prev && prev.stars >= 1);
+    }
+
+    function renderLevelGrid() {
+      const profile = getProfile();
+      levelGrid.innerHTML = '';
+      for (let i = 1; i <= TOTAL_LEVELS; i++) {
+        const s = profile.levels[String(i)] || {};
+        const locked = !isLevelUnlocked(i);
+        const stars = '★'.repeat(s.stars || 0) + '☆'.repeat(3 - (s.stars || 0));
+        const best = s.bestPct ? `${s.bestPct}%` : '-';
+        const time = s.bestTimeMs ? msToClock(s.bestTimeMs) : '-';
+        const attempts = s.attempts || 0;
+
+        const btn = document.createElement('button');
+        btn.className = 'level-tile' + (locked ? ' locked' : '');
+        btn.disabled = locked;
+        btn.setAttribute('role', 'listitem');
+        btn.setAttribute('aria-label',
+          locked
+            ? `Level ${i} locked. Unlock by earning 1 star in Level ${i-1}.`
+            : `Level ${i}. Best ${best}. ${s.stars || 0} of 3 stars. Attempts ${attempts}.`
+        );
+        btn.innerHTML = `
+          <div class="level-title">Level ${i}</div>
+          <div class="stars" aria-hidden="true">${stars}</div>
+          <div class="level-meta">Best: ${best} • Time: ${time} • Attempts: ${attempts}</div>
+          ${locked ? `<div class="level-meta">Unlock: earn 1★ in Level ${i-1}</div>` : ''}
+        `;
+        btn.addEventListener('click', () => {
+          start(i);
+          showGame();
+        });
+        levelGrid.appendChild(btn);
+      }
+
+      continueBtn.onclick = () => {
+        const p = getProfile();
+        const fallback = isLevelUnlocked(p.lastLevel) ? p.lastLevel : 1;
+        start(fallback || 1);
+        showGame();
+      };
+    }
+
+    function showLevelSelect() {
+      document.getElementById('levelSelectScreen').style.display = 'block';
+      document.querySelector('.wrap').style.display = 'none';
+      renderLevelGrid();
+    }
+
+    function showGame() {
+      document.getElementById('levelSelectScreen').style.display = 'none';
+      document.querySelector('.wrap').style.display = 'block';
+    }
+
     // Validator for MOL strings
     function validateMolString(s) {
       if (typeof s !== 'string') return 'MOL is not a string';
@@ -386,7 +504,7 @@
     let score = 0;
     let idx = 0;
     let questions = [];
-    let currentLevel = 1; // Phase 0: single level
+    let currentLevel = 1;
 
     // UI elements
     const scoreEl = document.getElementById('score');
@@ -541,18 +659,18 @@
 
     nextBtn.addEventListener('click', () => {
       if (idx >= questions.length) {
-        start(); // restart
+        start(currentLevel); // restart same level
       } else {
         idx++;
         loadQuestion();
       }
     });
 
-    async function fetchQuestions(url = './questions-level-1.json') {
+    async function fetchQuestions(url) {
       const res = await fetch(url, { cache: 'no-store' });
       if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
       const data = await res.json();
-      if (!Array.isArray(data)) throw new Error('questions-level-1.json must be an array');
+      if (!Array.isArray(data)) throw new Error(`${url} must be an array`);
       data.forEach((q, i) => {
         if (!q || typeof q.name !== 'string' || typeof q.mol !== 'string' || !Array.isArray(q.distractors)) {
           throw new Error(`Invalid question at index ${i}`);
@@ -563,7 +681,16 @@
       return data;
     }
 
-    async function start() {
+    async function start(level = 1) {
+      // Guard: if level is locked, show level select
+      if (!isLevelUnlocked(level)) {
+        showLevelSelect();
+        return;
+      }
+
+      currentLevel = level;
+      setUrlLevel(level);
+
       // Phase 0: start run timer
       window._runStartedAt = Date.now();
 
@@ -572,7 +699,7 @@
       idx = 0;
 
       try {
-        const data = await fetchQuestions('./questions-level-1.json');
+        const data = await fetchQuestions(`./questions-level-${currentLevel}.json`);
         questions = shuffle(data);
       } catch (e) {
         console.error(e);
@@ -600,8 +727,16 @@
       }
     });
 
-    // Kick off (Phase 0: behavior unchanged, auto-start Level 1)
-    start();
+    // Initial routing: deep link or Level Select
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlLevel = getUrlLevel();
+      if (urlLevel && isLevelUnlocked(urlLevel)) {
+        showGame();
+        start(urlLevel);
+      } else {
+        showLevelSelect();
+      }
+    });
   </script>
 </body>
 </html>
