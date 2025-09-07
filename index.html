@@ -1,33 +1,226 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="X-UA-Compatible" content="chrome=1">
-  <link rel="stylesheet" href="ChemDoodleWeb.css" type="text/css">
-  <script type="text/javascript" src="ChemDoodleWeb.js"></script>
-  <title>ChemDoodle Minimal Viewer</title>
+  <meta charset="UTF-8" />
+  <title>Alkane Naming Quiz</title>
+  <link rel="stylesheet" href="./ChemDoodleWeb.css" type="text/css" />
+  <script src="./ChemDoodleWeb.js"></script>
+  <style>
+    body { margin: 0; font-family: system-ui, Arial, sans-serif; background: #0e0f12; color: #e7ecf3; }
+    .wrap { max-width: 820px; margin: 40px auto; padding: 18px; background: #0b0d12; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; }
+    .row { margin-top: 12px; }
+    .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 620px) { .choices { grid-template-columns: 1fr; } }
+    .btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: #e7ecf3; padding: 10px; border-radius: 8px; cursor: pointer; text-align: left; }
+    .btn:hover { border-color: rgba(77,163,255,0.7); }
+    .btn:disabled { opacity: 0.7; cursor: not-allowed; }
+    .btn.correct { border-color: rgba(46, 204, 113, 0.8); background: rgba(46, 204, 113, 0.15); }
+    .btn.incorrect { border-color: rgba(231, 76, 60, 0.8); background: rgba(231, 76, 60, 0.15); }
+    .feedback { min-height: 24px; margin-top: 8px; }
+    .controls { margin-top: 12px; display: flex; gap: 10px; align-items: center; }
+    .next { background: rgba(77,163,255,0.25); border: 1px solid rgba(77,163,255,0.7); color: #e7f2ff; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+    .hidden { display: none; }
+    .header { display:flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .score { color:#a0a8b3; }
+    select { background: rgba(255,255,255,0.05); color:#e7ecf3; border:1px solid rgba(255,255,255,0.12); border-radius: 6px; padding: 6px 8px; }
+  </style>
 </head>
 <body>
-  <center>
-    <br>
-    <!-- Provide a canvas element explicitly -->
-    <canvas id="viewerCanvas" width="300" height="300"></canvas>
+  <div class="wrap">
+    <div class="header">
+      <h1 style="margin:0;">Alkane Naming Quiz</h1>
+      <div class="score">Score: <span id="score">0</span></div>
+    </div>
 
-    <script type="text/javascript">
-      // Initialize component and set visual specifications (same pattern as sample.html)
-      var viewerCanvas = new ChemDoodle.ViewerCanvas('viewerCanvas', 300, 300);
-      viewerCanvas.styles.bonds_width_2D = 0.6;
-      viewerCanvas.styles.bonds_saturationWidthAbs_2D = 2.6;
-      viewerCanvas.styles.bonds_hashSpacing_2D = 2.5;
-      viewerCanvas.styles.atoms_font_size_2D = 10;
-      viewerCanvas.styles.atoms_font_families_2D = ["Helvetica", "Arial", "sans-serif"];
-      viewerCanvas.styles.atoms_displayTerminalCarbonLabels_2D = true;
+    <div class="row">
+      <canvas id="viewer" width="520" height="300"></canvas>
+    </div>
 
-      // Use the same caffeine MOL example that your sample.html uses
-      var caffeineMolFile = 'Molecule Name\n  CHEMDOOD08070920033D 0   0.00000     0.00000     0\n[Insert Comment Here]\n 14 15  0  0  0  0  0  0  0  0  1 V2000\n   -0.3318    2.0000    0.0000   O 0  0  0  1  0  0  0  0  0  0  0  0\n   -0.3318    1.0000    0.0000   C 0  0  0  1  0  0  0  0  0  0  0  0\n   -1.1980    0.5000    0.0000   N 0  0  0  1  0  0  0  0  0  0  0  0\n    0.5342    0.5000    0.0000   C 0  0  0  1  0  0  0  0  0  0  0  0\n   -1.1980   -0.5000    0.0000   C 0  0  0  1  0  0  0  0  0  0  0  0\n   -2.0640    1.0000    0.0000   C 0  0  0  4  0  0  0  0  0  0  0  0\n    1.4804    0.8047    0.0000   N 0  0  0  1  0  0  0  0  0  0  0  0\n    0.5342   -0.5000    0.0000   C 0  0  0  1  0  0  0  0  0  0  0  0\n   -2.0640   -1.0000    0.0000   O 0  0  0  1  0  0  0  0  0  0  0  0\n   -0.3318   -1.0000    0.0000   N 0  0  0  1  0  0  0  0  0  0  0  0\n    2.0640   -0.0000    0.0000   C 0  0  0  2  0  0  0  0  0  0  0  0\n    1.7910    1.7553    0.0000   C 0  0  0  4  0  0  0  0  0  0  0  0\n    1.4804   -0.8047    0.0000   N 0  0  0  1  0  0  0  0  0  0  0  0\n   -0.3318   -2.0000    0.0000   C 0  0  0  4  0  0  0  0  0  0  0  0\n  1  2  2  0  0  0  0\n  3  2  1  0  0  0  0\n  4  2  1  0  0  0  0\n  3  5  1  0  0  0  0\n  3  6  1  0  0  0  0\n  7  4  1  0  0  0  0\n  4  8  2  0  0  0  0\n  9  5  2  0  0  0  0\n 10  5  1  0  0  0  0\n 10  8  1  0  0  0  0\n  7 11  1  0  0  0  0\n  7 12  1  0  0  0  0\n 13  8  1  0  0  0  0\n 13 11  2  0  0  0  0\n 10 14  1  0  0  0  0\nM  END\n> <DATE>\n07-08-2009\n';
-      var caffeine = ChemDoodle.readMOL(caffeineMolFile);
-      caffeine.scaleToAverageBondLength(14.4);
-      viewerCanvas.loadMolecule(caffeine);
-    </script>
-  </center>
+    <div class="row choices" id="choices"></div>
+    <div class="row feedback" id="feedback"></div>
+    <div class="controls">
+      <button id="next" class="next hidden">Next</button>
+      <select id="labelMode">
+        <option value="none">Skeletal (no C labels)</option>
+        <option value="terminal">Terminal C labels</option>
+        <option value="all" selected>All C labels</option>
+      </select>
+    </div>
+  </div>
+
+  <script>
+    // Validator for MOL strings
+    function validateMolString(s) {
+      if (typeof s !== 'string') return 'MOL is not a string';
+      const lines = s.split(/\r?\n/);
+      if (lines.length < 6) return 'MOL too short';
+      const m = (lines[3] || '').match(/^\s*(\d+)\s+(\d+)/);
+      if (!m) return 'Counts line missing/malformed';
+      const nAtoms = parseInt(m[1], 10), nBonds = parseInt(m[2], 10);
+      const atomsStart = 4, atomsEnd = atomsStart + nAtoms, bondsEnd = atomsEnd + nBonds;
+      if (lines.length < bondsEnd) return 'Atom/bond lines fewer than counts';
+      return null;
+    }
+
+    // Utilities
+    function shuffle(arr) { return arr.map(v => [Math.random(), v]).sort((a,b)=>a[0]-b[0]).map(x => x[1]); }
+
+    // State
+    let score = 0;
+    let idx = 0;
+    let questions = [];
+
+    // UI elements
+    const scoreEl = document.getElementById('score');
+    const choicesEl = document.getElementById('choices');
+    const feedbackEl = document.getElementById('feedback');
+    const nextBtn = document.getElementById('next');
+    const labelModeEl = document.getElementById('labelMode');
+
+    // Viewer setup
+    let viewer;
+    try {
+      if (window.ChemDoodle && ChemDoodle.iChemLabs && ChemDoodle.iChemLabs.checkForUpdates) {
+        ChemDoodle.iChemLabs.checkForUpdates = function(){};
+      }
+      viewer = new ChemDoodle.ViewerCanvas('viewer', 520, 300);
+      viewer.styles.bonds_width_2D = 0.6;
+      viewer.styles.bonds_saturationWidthAbs_2D = 2.6;
+      viewer.styles.bonds_hashSpacing_2D = 2.5;
+      viewer.styles.atoms_font_size_2D = 12;
+      viewer.styles.atoms_font_families_2D = ['Helvetica','Arial','sans-serif'];
+    } catch (e) {
+      console.error('ChemDoodle init failed:', e);
+    }
+
+    function applyLabelMode(mode) {
+      viewer.styles.atoms_displayAllCarbonLabels_2D = (mode === 'all');
+      viewer.styles.atoms_displayTerminalCarbonLabels_2D = (mode === 'terminal');
+      if (viewer.repaint) viewer.repaint();
+    }
+    labelModeEl.addEventListener('change', e => applyLabelMode(e.target.value));
+    applyLabelMode(labelModeEl.value);
+
+    function drawMol(molString) {
+      const err = validateMolString(molString);
+      if (err) { console.error('Invalid MOL:', err); return; }
+      const mol = ChemDoodle.readMOL(molString);
+      if (mol && mol.scaleToAverageBondLength) mol.scaleToAverageBondLength(40); // clearer scaling
+      viewer.loadMolecule(mol);
+    }
+
+    function loadQuestion() {
+      feedbackEl.textContent = '';
+      choicesEl.innerHTML = '';
+      nextBtn.classList.add('hidden');
+
+      if (idx >= questions.length) {
+        end();
+        return;
+      }
+      const q = questions[idx];
+      drawMol(q.mol);
+
+      const options = shuffle([q.name, ...q.distractors]);
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'btn';
+        btn.textContent = opt;
+        btn.addEventListener('click', () => checkAnswer(q, opt, btn));
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(q, selected, btnEl) {
+      const all = choicesEl.querySelectorAll('button');
+      all.forEach(b => b.disabled = true);
+
+      if (selected === q.name) {
+        score++;
+        scoreEl.textContent = score;
+        btnEl.classList.add('correct');
+        feedbackEl.textContent = 'Correct!';
+        feedbackEl.style.color = '#2ecc71';
+      } else {
+        btnEl.classList.add('incorrect');
+        const correctBtn = [...all].find(b => b.textContent === q.name);
+        if (correctBtn) correctBtn.classList.add('correct');
+        feedbackEl.textContent = 'Incorrect. The correct answer is ' + q.name + '.';
+        feedbackEl.style.color = '#e74c3c';
+      }
+
+      nextBtn.textContent = (idx === questions.length - 1) ? 'See Final Score' : 'Next';
+      nextBtn.classList.remove('hidden');
+    }
+
+    function end() {
+      const total = questions.length;
+      const pct = total ? Math.round((score / total) * 100) : 0;
+      choicesEl.innerHTML = '';
+      feedbackEl.style.color = '#e7ecf3';
+      feedbackEl.innerHTML = `Quiz complete. You scored <strong>${score} / ${total}</strong> (${pct}%).`;
+      nextBtn.textContent = 'Play Again';
+      nextBtn.classList.remove('hidden');
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (idx >= questions.length) {
+        start(); // restart
+      } else {
+        idx++;
+        loadQuestion();
+      }
+    });
+
+    async function fetchQuestions(url = './questions.json') {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+      const data = await res.json();
+      if (!Array.isArray(data)) throw new Error('questions.json must be an array');
+      data.forEach((q, i) => {
+        if (!q || typeof q.name !== 'string' || typeof q.mol !== 'string' || !Array.isArray(q.distractors)) {
+          throw new Error(`Invalid question at index ${i}`);
+        }
+        const err = validateMolString(q.mol);
+        if (err) throw new Error(`Invalid MOL at index ${i}: ${err}`);
+      });
+      return data;
+    }
+
+    async function start() {
+      score = 0;
+      scoreEl.textContent = score;
+      idx = 0;
+
+      try {
+        const data = await fetchQuestions('./questions.json');
+        questions = shuffle(data);
+      } catch (e) {
+        console.error(e);
+        feedbackEl.style.color = '#e74c3c';
+        feedbackEl.textContent = 'Failed to load questions. See console for details.';
+        questions = [];
+      }
+
+      loadQuestion();
+    }
+
+    // Keyboard shortcuts: 1–4 answers, Enter for Next
+    document.addEventListener('keydown', (e) => {
+      const buttons = [...choicesEl.querySelectorAll('button')];
+      if (!buttons.length) return;
+      if (e.key === 'Enter' && !nextBtn.classList.contains('hidden')) {
+        nextBtn.click();
+        return;
+      }
+      const k = parseInt(e.key, 10) - 1;
+      if (k >= 0 && k < buttons.length && !buttons[0].disabled) {
+        buttons[k].click();
+      }
+    });
+
+    // Kick off
+    start();
+  </script>
 </body>
 </html>
