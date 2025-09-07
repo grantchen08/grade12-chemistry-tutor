@@ -28,9 +28,10 @@
     }
     .btn:hover { border-color: rgba(77,163,255,0.7); }
     .btn:disabled { opacity: 0.7; cursor: not-allowed; }
-    .btn.correct { border-color: rgba(46, 204, 113, 0.8); background: rgba(46, 204, 113, 0.15); }
-    .btn.incorrect { border-color: rgba(231, 76, 60, 0.8); background: rgba(231, 76, 60, 0.15); }
-    .feedback { min-height: 24px; margin-top: 8px; }
+    .btn.correct { border-color: rgba(46, 204, 113, 0.9); background: rgba(46, 204, 113, 0.18); }
+    .btn.incorrect { border-color: rgba(231, 76, 60, 0.9); background: rgba(231, 76, 60, 0.18); }
+
+    .feedback { min-height: 24px; margin-top: 8px; color: #e7ecf3; }
     .controls { margin-top: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .next {
       background: rgba(77,163,255,0.25);
@@ -53,8 +54,13 @@
       padding: 8px 10px;
       font-size: 16px;
     }
-    /* Phase 1: make the canvas responsive in layout; drawing buffer handled by JS */
+
+    /* Phase 1: responsive canvas in layout; drawing buffer handled by JS */
     canvas#viewer { width: 100%; height: auto; display: block; }
+
+    /* Phase 2: visible focus styles for keyboard users */
+    .btn:focus, .next:focus, select:focus { outline: 2px solid rgba(77,163,255,0.9); outline-offset: 2px; }
+    .btn:focus-visible, .next:focus-visible, select:focus-visible { outline: 3px solid rgba(77,163,255,1); outline-offset: 2px; }
   </style>
 </head>
 <body>
@@ -68,11 +74,11 @@
       <canvas id="viewer" width="520" height="300"></canvas>
     </div>
 
-    <div class="row choices" id="choices"></div>
-    <div class="row feedback" id="feedback"></div>
+    <div class="row choices" id="choices" role="group" aria-label="Answer choices"></div>
+    <div class="row feedback" id="feedback" aria-live="polite" role="status"></div>
     <div class="controls">
       <button id="next" class="next hidden">Next</button>
-      <select id="labelMode">
+      <select id="labelMode" aria-label="Carbon label mode">
         <option value="none">Skeletal (no C labels)</option>
         <option value="terminal">Terminal C labels</option>
         <option value="all" selected>All C labels</option>
@@ -197,7 +203,7 @@
       const q = questions[idx];
       drawMol(q.mol);
 
-      // Phase 1: ensure canvas fits current layout after drawing
+      // Ensure canvas fits current layout after drawing
       sizeCanvas();
 
       const options = shuffle([q.name, ...q.distractors]);
@@ -230,6 +236,9 @@
 
       nextBtn.textContent = (idx === questions.length - 1) ? 'See Final Score' : 'Next';
       nextBtn.classList.remove('hidden');
+
+      // Phase 2: move focus to Next to support keyboard and screen reader flow
+      nextBtn.focus();
     }
 
     function end() {
@@ -240,6 +249,9 @@
       feedbackEl.innerHTML = `Quiz complete. You scored <strong>${score} / ${total}</strong> (${pct}%).`;
       nextBtn.textContent = 'Play Again';
       nextBtn.classList.remove('hidden');
+
+      // Phase 2: focus the Play Again button for accessibility
+      nextBtn.focus();
     }
 
     nextBtn.addEventListener('click', () => {
@@ -281,7 +293,7 @@
         questions = [];
       }
 
-      // Phase 1: ensure canvas is sized at startup
+      // Ensure canvas is sized at startup
       sizeCanvas();
       loadQuestion();
     }
