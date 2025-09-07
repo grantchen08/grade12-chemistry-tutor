@@ -7,12 +7,75 @@
   <link rel="stylesheet" href="./ChemDoodleWeb.css" type="text/css" />
   <script src="./ChemDoodleWeb.js"></script>
   <style>
+    /* Color tokens: light and dark themes */
+    :root {
+      /* Neutrals (light) */
+      --color-bg: hsl(220 20% 98%);
+      --color-surface: hsl(0 0% 100%);
+      --color-border: hsl(220 15% 88%);
+      --color-text: hsl(220 20% 18%);
+      --color-muted: hsl(220 10% 45%);
+
+      /* Accent */
+      --color-accent: hsl(212 85% 52%);
+      --color-accent-hover: hsl(212 90% 46%);
+      --color-accent-soft: hsl(212 85% 96%);
+      --color-accent-contrast: #ffffff;
+
+      /* Status */
+      --color-success: hsl(146 60% 36%);
+      --color-success-soft: hsl(146 60% 94%);
+      --color-error: hsl(0 75% 45%);
+      --color-error-soft: hsl(0 75% 95%);
+
+      /* Focus */
+      --color-focus: hsl(212 90% 46%);
+
+      /* Component specifics */
+      --btn-bg: hsl(220 15% 97%);
+      --btn-bg-hover-border: var(--color-accent);
+      --next-bg: var(--color-accent-soft);
+      --next-bg-hover: hsl(212 85% 92%);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* Neutrals (dark) */
+        --color-bg: hsl(220 15% 9%);
+        --color-surface: hsl(220 15% 12%);
+        --color-border: hsl(220 10% 22%);
+        --color-text: hsl(220 25% 92%);
+        --color-muted: hsl(220 10% 65%);
+
+        /* Accent */
+        --color-accent: hsl(212 85% 60%);
+        --color-accent-hover: hsl(212 90% 65%);
+        --color-accent-soft: hsl(212 85% 18%);
+        --color-accent-contrast: #ffffff;
+
+        /* Status */
+        --color-success: hsl(146 60% 48%);
+        --color-success-soft: hsl(146 60% 18%);
+        --color-error: hsl(0 75% 58%);
+        --color-error-soft: hsl(0 75% 18%);
+
+        /* Focus */
+        --color-focus: hsl(212 90% 65%);
+
+        /* Components */
+        --btn-bg: hsl(220 12% 16%);
+        --btn-bg-hover-border: var(--color-accent);
+        --next-bg: var(--color-accent-soft);
+        --next-bg-hover: hsl(212 85% 24%);
+      }
+    }
+
     /* Base and safe-area support */
     body {
       margin: 0;
       font-family: system-ui, Arial, sans-serif;
-      background: #0e0f12;
-      color: #e7ecf3;
+      background: var(--color-bg);
+      color: var(--color-text);
       padding-left: max(0px, env(safe-area-inset-left));
       padding-right: max(0px, env(safe-area-inset-right));
       padding-bottom: max(0px, env(safe-area-inset-bottom));
@@ -22,8 +85,8 @@
       max-width: 1100px; /* supports two-column desktop layout */
       margin: 40px auto;
       padding: 18px;
-      background: #0b0d12;
-      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
       border-radius: 12px;
     }
 
@@ -41,7 +104,7 @@
       line-height: 1.2;
     }
 
-    .score { color: #a0a8b3; }
+    .score { color: var(--color-muted); }
 
     .row { margin-top: 12px; }
 
@@ -62,7 +125,7 @@
 
     /* Feedback prominence */
     .feedback {
-      color: #e7ecf3;
+      color: var(--color-text);
       font-size: 18px;        /* Larger text size for emphasis */
       line-height: 1.4;
       font-weight: 600;       /* Slightly bolder for significance */
@@ -71,31 +134,43 @@
 
     /* Buttons */
     .btn {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: #e7ecf3;
+      background: var(--btn-bg);
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
       padding: 14px;
       border-radius: 8px;
       cursor: pointer;
       text-align: left;
       font-size: 16px;
       line-height: 1.3;
+      transition: border-color 120ms ease;
     }
-    .btn:hover { border-color: rgba(77,163,255,0.7); }
+    .btn:hover { border-color: var(--btn-bg-hover-border); }
     .btn:disabled { opacity: 0.7; cursor: not-allowed; }
-    .btn.correct { border-color: rgba(46, 204, 113, 0.9); background: rgba(46, 204, 113, 0.18); }
-    .btn.incorrect { border-color: rgba(231, 76, 60, 0.9); background: rgba(231, 76, 60, 0.18); }
+    .btn.correct {
+      border-color: var(--color-success);
+      background: var(--color-success-soft);
+    }
+    .btn.incorrect {
+      border-color: var(--color-error);
+      background: var(--color-error-soft);
+    }
 
     .next {
       align-self: stretch;
-      background: rgba(77,163,255,0.25);
-      border: 1px solid rgba(77,163,255,0.7);
-      color: #e7f2ff;
+      background: var(--next-bg);
+      border: 1px solid var(--color-accent);
+      color: var(--color-text);
       padding: 12px 16px;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 700;
       font-size: 16px;
+      transition: background-color 120ms ease, border-color 120ms ease;
+    }
+    .next:hover {
+      background: var(--next-bg-hover);
+      border-color: var(--color-accent-hover);
     }
 
     .hidden { display: none; }
@@ -104,8 +179,14 @@
     canvas#viewer { width: 100%; height: auto; display: block; }
 
     /* Visible focus styles for keyboard users */
-    .btn:focus, .next:focus { outline: 2px solid rgba(77,163,255,0.9); outline-offset: 2px; }
-    .btn:focus-visible, .next:focus-visible { outline: 3px solid rgba(77,163,255,1); outline-offset: 2px; }
+    .btn:focus, .next:focus {
+      outline: 2px solid var(--color-focus);
+      outline-offset: 2px;
+    }
+    .btn:focus-visible, .next:focus-visible {
+      outline: 3px solid var(--color-focus);
+      outline-offset: 2px;
+    }
 
     /* Mobile spacing refinements */
     @media (max-width: 620px) {
@@ -191,7 +272,7 @@
       viewer.styles.bonds_hashSpacing_2D = 2.5;
       viewer.styles.atoms_font_size_2D = 12;
       viewer.styles.atoms_font_families_2D = ['Helvetica','Arial','sans-serif'];
-      // Always display all carbon labels (label mode UI removed)
+      // Always display all carbon labels
       viewer.styles.atoms_displayAllCarbonLabels_2D = true;
       viewer.styles.atoms_displayTerminalCarbonLabels_2D = false;
     } catch (e) {
@@ -251,7 +332,7 @@
 
     function loadQuestion() {
       feedbackEl.textContent = '';
-      feedbackEl.style.color = '#e7ecf3';
+      feedbackEl.style.color = 'var(--color-text)';
       choicesEl.innerHTML = '';
       nextBtn.classList.add('hidden');
 
@@ -287,13 +368,13 @@
         scoreEl.textContent = score;
         btnEl.classList.add('correct');
         feedbackEl.textContent = 'Correct!';
-        feedbackEl.style.color = '#2ecc71';
+        feedbackEl.style.color = 'var(--color-success)';
       } else {
         btnEl.classList.add('incorrect');
         const correctBtn = [...all].find(b => b.textContent === q.name);
         if (correctBtn) correctBtn.classList.add('correct');
         feedbackEl.textContent = 'Incorrect. The correct answer is ' + q.name + '.';
-        feedbackEl.style.color = '#e74c3c';
+        feedbackEl.style.color = 'var(--color-error)';
       }
 
       nextBtn.textContent = (idx === questions.length - 1) ? 'See Final Score' : 'Next';
@@ -307,7 +388,7 @@
       const total = questions.length;
       const pct = total ? Math.round((score / total) * 100) : 0;
       choicesEl.innerHTML = '';
-      feedbackEl.style.color = '#e7ecf3';
+      feedbackEl.style.color = 'var(--color-text)';
       feedbackEl.innerHTML = `Quiz complete. You scored <strong>${score} / ${total}</strong> (${pct}%).`;
       nextBtn.textContent = 'Play Again';
       nextBtn.classList.remove('hidden');
@@ -350,7 +431,7 @@
         questions = shuffle(data);
       } catch (e) {
         console.error(e);
-        feedbackEl.style.color = '#e74c3c';
+        feedbackEl.style.color = 'var(--color-error)';
         feedbackEl.textContent = 'Failed to load questions. See console for details.';
         questions = [];
       }
