@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="./ChemDoodleWeb.css" type="text/css" />
   <script src="./ChemDoodleWeb.js"></script>
   <style>
-    /* Base and safe-area support (Phase 3) */
+    /* Base and safe-area support */
     body {
       margin: 0;
       font-family: system-ui, Arial, sans-serif;
@@ -19,7 +19,7 @@
     }
 
     .wrap {
-      max-width: 820px;
+      max-width: 1100px; /* widened to comfortably support two-column desktop layout */
       margin: 40px auto;
       padding: 18px;
       background: #0b0d12;
@@ -34,7 +34,7 @@
       margin-bottom: 12px;
     }
 
-    /* Phase 3: responsive, clamped title size */
+    /* Responsive, clamped title size */
     .header h1 {
       margin: 0;
       font-size: clamp(18px, 3.5vw, 28px);
@@ -45,20 +45,19 @@
 
     .row { margin-top: 12px; }
 
-    /* Phase 3: smarter responsive grid for choices */
+    /* Right column container holds choices and Next (on all breakpoints) */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px; /* spacing when stacked on mobile/tablet */
+    }
+
+    /* Choices grid (mobile/tablet default) */
     .choices {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 10px;
-    }
-
-    /* Controls already wrap; keep spacing tidy */
-    .controls {
-      margin-top: 12px;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
     }
 
     /* Buttons and inputs */
@@ -79,6 +78,7 @@
     .btn.incorrect { border-color: rgba(231, 76, 60, 0.9); background: rgba(231, 76, 60, 0.18); }
 
     .next {
+      align-self: stretch;
       background: rgba(77,163,255,0.25);
       border: 1px solid rgba(77,163,255,0.7);
       color: #e7f2ff;
@@ -89,29 +89,39 @@
       font-size: 16px;
     }
 
-    select {
-      background: rgba(255,255,255,0.05);
-      color:#e7ecf3;
-      border:1px solid rgba(255,255,255,0.12);
-      border-radius: 6px;
-      padding: 8px 10px;
-      font-size: 16px;
-    }
-
     .feedback { min-height: 24px; margin-top: 8px; color: #e7ecf3; }
     .hidden { display: none; }
 
-    /* Phase 1: responsive canvas in layout; drawing buffer handled by JS */
+    /* Responsive canvas in layout; drawing buffer handled by JS */
     canvas#viewer { width: 100%; height: auto; display: block; }
 
-    /* Phase 2: visible focus styles for keyboard users */
-    .btn:focus, .next:focus, select:focus { outline: 2px solid rgba(77,163,255,0.9); outline-offset: 2px; }
-    .btn:focus-visible, .next:focus-visible, select:focus-visible { outline: 3px solid rgba(77,163,255,1); outline-offset: 2px; }
+    /* Visible focus styles for keyboard users */
+    .btn:focus, .next:focus { outline: 2px solid rgba(77,163,255,0.9); outline-offset: 2px; }
+    .btn:focus-visible, .next:focus-visible { outline: 3px solid rgba(77,163,255,1); outline-offset: 2px; }
 
-    /* Phase 3: mobile spacing refinements */
+    /* Mobile spacing refinements */
     @media (max-width: 620px) {
       .wrap { margin: 16px; padding: 14px; }
-      .controls { gap: 8px; }
+    }
+
+    /* Desktop two-column layout */
+    @media (min-width: 992px) {
+      .wrap {
+        display: grid;
+        grid-template-columns: minmax(520px, 1fr) 380px; /* left = canvas, right = choices/Next */
+        grid-template-areas:
+          "header header"
+          "canvas choices"
+          "feedback choices";
+        column-gap: 16px;
+        row-gap: 12px;
+      }
+      .header { grid-area: header; margin-bottom: 0; }
+      .canvas-row { grid-area: canvas; }
+      .feedback { grid-area: feedback; }
+      .right-col { grid-area: choices; margin-top: 0; }
+      /* On desktop, keep choices one-per-row in the right column */
+      .choices { grid-template-columns: 1fr; align-content: start; }
     }
   </style>
 </head>
@@ -122,20 +132,17 @@
       <div class="score">Score: <span id="score">0</span></div>
     </div>
 
-    <div class="row">
+    <div class="row canvas-row">
       <canvas id="viewer" width="520" height="300"></canvas>
     </div>
 
-    <div class="row choices" id="choices" role="group" aria-label="Answer choices"></div>
-    <div class="row feedback" id="feedback" aria-live="polite" role="status"></div>
-    <div class="controls">
+    <!-- Right side column: choices + Next button -->
+    <div class="right-col" id="rightCol">
+      <div class="choices" id="choices" role="group" aria-label="Answer choices"></div>
       <button id="next" class="next hidden">Next</button>
-      <select id="labelMode" aria-label="Carbon label mode">
-        <option value="none">Skeletal (no C labels)</option>
-        <option value="terminal">Terminal C labels</option>
-        <option value="all" selected>All C labels</option>
-      </select>
     </div>
+
+    <div class="row feedback" id="feedback" aria-live="polite" role="status"></div>
   </div>
 
   <script>
@@ -166,7 +173,6 @@
     const choicesEl = document.getElementById('choices');
     const feedbackEl = document.getElementById('feedback');
     const nextBtn = document.getElementById('next');
-    const labelModeEl = document.getElementById('labelMode');
 
     // Viewer setup
     let viewer;
@@ -180,11 +186,14 @@
       viewer.styles.bonds_hashSpacing_2D = 2.5;
       viewer.styles.atoms_font_size_2D = 12;
       viewer.styles.atoms_font_families_2D = ['Helvetica','Arial','sans-serif'];
+      // Always display all carbon labels (label mode UI removed)
+      viewer.styles.atoms_displayAllCarbonLabels_2D = true;
+      viewer.styles.atoms_displayTerminalCarbonLabels_2D = false;
     } catch (e) {
       console.error('ChemDoodle init failed:', e);
     }
 
-    // Phase 1: DPR-aware, responsive canvas sizing
+    // DPR-aware, responsive canvas sizing
     const initialCanvas = document.getElementById('viewer');
     const initialW = parseInt(initialCanvas.getAttribute('width'), 10) || 520;
     const initialH = parseInt(initialCanvas.getAttribute('height'), 10) || 300;
@@ -227,14 +236,6 @@
 
     window.addEventListener('resize', debounce(sizeCanvas, 150));
 
-    function applyLabelMode(mode) {
-      viewer.styles.atoms_displayAllCarbonLabels_2D = (mode === 'all');
-      viewer.styles.atoms_displayTerminalCarbonLabels_2D = (mode === 'terminal');
-      if (viewer.repaint) viewer.repaint();
-    }
-    labelModeEl.addEventListener('change', e => applyLabelMode(e.target.value));
-    applyLabelMode(labelModeEl.value);
-
     function drawMol(molString) {
       const err = validateMolString(molString);
       if (err) { console.error('Invalid MOL:', err); return; }
@@ -264,7 +265,7 @@
         btn.className = 'btn';
         btn.textContent = opt;
         btn.addEventListener('click', () => checkAnswer(q, opt, btn));
-        // Improve accessibility of choices
+        // Accessibility hint
         btn.setAttribute('aria-pressed', 'false');
         btn.addEventListener('click', () => btn.setAttribute('aria-pressed', 'true'), { once: true });
         choicesEl.appendChild(btn);
@@ -292,7 +293,7 @@
       nextBtn.textContent = (idx === questions.length - 1) ? 'See Final Score' : 'Next';
       nextBtn.classList.remove('hidden');
 
-      // Accessibility: move focus to Next to support keyboard and screen reader flow
+      // Move focus to Next for better keyboard/screen reader flow
       nextBtn.focus();
     }
 
@@ -305,7 +306,7 @@
       nextBtn.textContent = 'Play Again';
       nextBtn.classList.remove('hidden');
 
-      // Accessibility: focus the Play Again button
+      // Focus the Play Again button
       nextBtn.focus();
     }
 
