@@ -9,6 +9,19 @@
     <link rel="stylesheet" href="ChemDoodleWeb.css">
     <script src="ChemDoodleWeb.js"></script>
 
+    <script>
+        // This function waits for the ChemDoodle library to be fully loaded
+        // and then disables the automatic "check for updates" call which causes
+        // a CORS error when running the file locally.
+        (function disableUpdateCheck() {
+            if (window.ChemDoodle && ChemDoodle.iChemLabs && ChemDoodle.iChemLabs.checkForUpdates) {
+                ChemDoodle.iChemLabs.checkForUpdates = function() {}; // Replace with an empty function
+            } else {
+                // If not ready, try again shortly.
+                setTimeout(disableUpdateCheck, 50);
+            }
+        })();
+    </script>
     <style>
         /* --- CSS STYLING --- */
         /* This section controls the visual appearance of the game. */
