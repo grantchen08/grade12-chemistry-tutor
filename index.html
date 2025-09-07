@@ -7,7 +7,8 @@
   <link rel="stylesheet" href="./ChemDoodleWeb.css" type="text/css" />
   <script src="./ChemDoodleWeb.js"></script>
   <style>
-    /* Color tokens: light and dark themes */
+    /* Color tokens updated to use the requested palette:
+       #C7D11D (yellow-green), #40A02B (green), #287DB0 (blue), #151515 (near-black) */
     :root {
       /* Neutrals (light) */
       --color-bg: hsl(220 20% 98%);
@@ -16,57 +17,65 @@
       --color-text: hsl(220 20% 18%);
       --color-muted: hsl(220 10% 45%);
 
-      /* Accent */
-      --color-accent: hsl(212 85% 52%);
-      --color-accent-hover: hsl(212 90% 46%);
-      --color-accent-soft: hsl(212 85% 96%);
+      /* Accent → BLUE #287DB0 */
+      --color-accent: #287DB0;
+      --color-accent-hover: #23709D;     /* slightly darker */
+      --color-accent-soft: #E6F2F9;      /* very light blue tint */
       --color-accent-contrast: #ffffff;
 
-      /* Status */
-      --color-success: hsl(146 60% 36%);
-      --color-success-soft: hsl(146 60% 94%);
+      /* Status → SUCCESS uses GREEN #40A02B */
+      --color-success: #40A02B;
+      --color-success-soft: #E7F4E4;
+
+      /* Error left as-is */
       --color-error: hsl(0 75% 45%);
       --color-error-soft: hsl(0 75% 95%);
 
-      /* Focus */
-      --color-focus: hsl(212 90% 46%);
+      /* Focus ring matches accent */
+      --color-focus: #287DB0;
 
       /* Component specifics */
       --btn-bg: hsl(220 15% 97%);
       --btn-bg-hover-border: var(--color-accent);
-      --next-bg: var(--color-accent-soft);
-      --next-bg-hover: hsl(212 85% 92%);
+
+      /* Use the YELLOW-GREEN #C7D11D softly for the Next button background */
+      --next-bg: #F3F7C0;        /* soft tint from #C7D11D */
+      --next-bg-hover: #E7F190;  /* slightly stronger tint */
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
         /* Neutrals (dark) */
-        --color-bg: hsl(220 15% 9%);
+        --color-bg: #151515;                /* near-black from palette */
         --color-surface: hsl(220 15% 12%);
         --color-border: hsl(220 10% 22%);
         --color-text: hsl(220 25% 92%);
         --color-muted: hsl(220 10% 65%);
 
-        /* Accent */
-        --color-accent: hsl(212 85% 60%);
-        --color-accent-hover: hsl(212 90% 65%);
-        --color-accent-soft: hsl(212 85% 18%);
+        /* Accent → BLUE #287DB0 (slightly lifted on hover) */
+        --color-accent: #287DB0;
+        --color-accent-hover: #2F8BC0;
+        --color-accent-soft: #1B2D3A;   /* dark soft-blue surface */
         --color-accent-contrast: #ffffff;
 
-        /* Status */
-        --color-success: hsl(146 60% 48%);
-        --color-success-soft: hsl(146 60% 18%);
+        /* Success → GREEN #40A02B */
+        --color-success: #40A02B;
+        --color-success-soft: #1E2A1E;
+
+        /* Error */
         --color-error: hsl(0 75% 58%);
         --color-error-soft: hsl(0 75% 18%);
 
         /* Focus */
-        --color-focus: hsl(212 90% 65%);
+        --color-focus: #287DB0;
 
         /* Components */
         --btn-bg: hsl(220 12% 16%);
         --btn-bg-hover-border: var(--color-accent);
-        --next-bg: var(--color-accent-soft);
-        --next-bg-hover: hsl(212 85% 24%);
+
+        /* Softened yellow-green for dark surfaces */
+        --next-bg: #2E2F1A;       /* muted dark tint from #C7D11D */
+        --next-bg-hover: #3A3C21;
       }
     }
 
