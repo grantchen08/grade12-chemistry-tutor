@@ -23,7 +23,7 @@ Build a progressive, standards-aligned quiz for Grade 12 chemistry focused on na
   - Optional “Explain” feedback increases post-explanation accuracy by ≥15% on similar items.
 
 - Technical goals
-  - Maintain compatibility with existing web app (index.html, questions.json).
+  - Maintain compatibility with existing web app (index.html, questions-level-1.json).
   - Keep assets minimal: MOL V2000 strings, four-option multiple choice, keyboard shortcuts maintained.
   - Simple content pipeline: export MOL from common editors; JSON-based content with validation.
 
@@ -153,7 +153,7 @@ Notes:
 ### 6.2 File Structure
 
 - index.html — existing app UI and logic.
-- questions.json — content bank (can include level, explain).
+- questions-level-1.json — content bank (can include level, explain).
 - Optional future:
   - questions-level-1.json, … (if splitting by level).
   - assets/schema/question.schema.json (for validation in CI).
@@ -303,7 +303,7 @@ The following examples conform to the current validator (counts line matches, mi
   - Coverage: each rule (longest chain, lowest set, alphabetization, cyclo) has ≥15 targeted items.
 
 - Functionality
-  - App loads questions.json without errors; all items render.
+  - App loads questions-level-1.json without errors; all items render.
   - Level filter (if implemented) loads appropriate subset.
   - Explanations display when present.
 

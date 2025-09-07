@@ -172,11 +172,11 @@
       }
     });
 
-    async function fetchQuestions(url = './questions.json') {
+    async function fetchQuestions(url = './questions-level-1.json') {
       const res = await fetch(url, { cache: 'no-store' });
       if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
       const data = await res.json();
-      if (!Array.isArray(data)) throw new Error('questions.json must be an array');
+      if (!Array.isArray(data)) throw new Error('questions-level-1.json must be an array');
       data.forEach((q, i) => {
         if (!q || typeof q.name !== 'string' || typeof q.mol !== 'string' || !Array.isArray(q.distractors)) {
           throw new Error(`Invalid question at index ${i}`);
@@ -193,7 +193,7 @@
       idx = 0;
 
       try {
-        const data = await fetchQuestions('./questions.json');
+        const data = await fetchQuestions('./questions-level-1.json');
         questions = shuffle(data);
       } catch (e) {
         console.error(e);
