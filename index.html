@@ -49,12 +49,7 @@
     const levelConfig = {
       default: { targetTimeMs: 150000, twoStarPct: 80, threeStarPct: 95 },
       1: { targetTimeMs: 120000 },
-      2: { targetTimeMs: 150000 },
-      3: { targetTimeMs: 150000 },
-      4: { targetTimeMs: 150000 },
-      5: { targetTimeMs: 180000 },
-      6: { targetTimeMs: 180000 },
-      7: { targetTimeMs: 180000 }
+      2: { targetTimeMs: 150000 }
     };
 
     const STORAGE_KEY = 'alkaneQuiz.v1.profile';
@@ -170,9 +165,10 @@
     }
 
     /**********************************************************
-     * Phase 2: Level Select scaled to 7 levels + replay UX
+     * Phase 2: Level Select (limited to available levels)
      **********************************************************/
-    const TOTAL_LEVELS = 7;
+    // Limit visible/playable levels to those with JSON present
+    const TOTAL_LEVELS = 2;
     const levelGrid = document.getElementById('levelGrid');
     const continueBtn = document.getElementById('continueBtn');
 
@@ -228,8 +224,9 @@
 
       continueBtn.onclick = () => {
         const p = getProfile();
-        const fallback = isLevelUnlocked(p.lastLevel) ? p.lastLevel : 1;
-        start(fallback || 1);
+        const candidate = p.lastLevel || 1;
+        const fallback = (candidate <= TOTAL_LEVELS && isLevelUnlocked(candidate)) ? candidate : 1;
+        start(fallback);
       };
     }
 
@@ -423,7 +420,7 @@
           showLevelSelect();
         } else {
           const nextLevel = currentLevel + 1;
-          if (!isLevelUnlocked(nextLevel)) {
+          if (!isLevelUnlocked(nextLevel) || nextLevel > TOTAL_LEVELS) {
             showLevelSelect();
             return;
           }
@@ -457,7 +454,8 @@
     }
 
     async function start(level = 1) {
-      if (!isLevelUnlocked(level)) {
+      // Guard: don't start levels beyond available files or locked levels
+      if (level > TOTAL_LEVELS || !isLevelUnlocked(level)) {
         showLevelSelect();
         return;
       }
@@ -502,10 +500,10 @@
       }
     });
 
-    // Initial routing: deep link or Level Select
+    // Initial routing: deep link or Level Select (guarded by TOTAL_LEVELS)
     document.addEventListener('DOMContentLoaded', () => {
       const urlLevel = getUrlLevel();
-      if (urlLevel && isLevelUnlocked(urlLevel)) {
+      if (urlLevel && urlLevel <= TOTAL_LEVELS && isLevelUnlocked(urlLevel)) {
         start(urlLevel);
       } else {
         showLevelSelect();
