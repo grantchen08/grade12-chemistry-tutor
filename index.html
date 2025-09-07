@@ -9,15 +9,6 @@
     <link rel="stylesheet" href="ChemDoodleWeb.css">
     <script src="ChemDoodleWeb.js"></script>
 
-    <script>
-        // Prevent the automatic "check for updates" call which causes a CORS error
-        // when running the file locally. The application is self-contained and does not
-        // need to contact the ChemDoodle cloud services.
-        if (window.ChemDoodle && ChemDoodle.iChemLabs) {
-            ChemDoodle.iChemLabs.checkForUpdates = undefined;
-        }
-    </script>
-
     <style>
         /* --- CSS STYLING --- */
         /* This section controls the visual appearance of the game. */
