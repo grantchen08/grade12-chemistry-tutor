@@ -7,14 +7,61 @@
   <link rel="stylesheet" href="./ChemDoodleWeb.css" type="text/css" />
   <script src="./ChemDoodleWeb.js"></script>
   <style>
-    body { margin: 0; font-family: system-ui, Arial, sans-serif; background: #0e0f12; color: #e7ecf3; }
-    .wrap { max-width: 820px; margin: 40px auto; padding: 18px; background: #0b0d12; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; }
-    .row { margin-top: 12px; }
-    .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    @media (max-width: 620px) {
-      .choices { grid-template-columns: 1fr; }
-      .wrap { margin: 16px; padding: 14px; }
+    /* Base and safe-area support (Phase 3) */
+    body {
+      margin: 0;
+      font-family: system-ui, Arial, sans-serif;
+      background: #0e0f12;
+      color: #e7ecf3;
+      padding-left: max(0px, env(safe-area-inset-left));
+      padding-right: max(0px, env(safe-area-inset-right));
+      padding-bottom: max(0px, env(safe-area-inset-bottom));
     }
+
+    .wrap {
+      max-width: 820px;
+      margin: 40px auto;
+      padding: 18px;
+      background: #0b0d12;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    /* Phase 3: responsive, clamped title size */
+    .header h1 {
+      margin: 0;
+      font-size: clamp(18px, 3.5vw, 28px);
+      line-height: 1.2;
+    }
+
+    .score { color: #a0a8b3; }
+
+    .row { margin-top: 12px; }
+
+    /* Phase 3: smarter responsive grid for choices */
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 10px;
+    }
+
+    /* Controls already wrap; keep spacing tidy */
+    .controls {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons and inputs */
     .btn {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.12);
@@ -31,8 +78,6 @@
     .btn.correct { border-color: rgba(46, 204, 113, 0.9); background: rgba(46, 204, 113, 0.18); }
     .btn.incorrect { border-color: rgba(231, 76, 60, 0.9); background: rgba(231, 76, 60, 0.18); }
 
-    .feedback { min-height: 24px; margin-top: 8px; color: #e7ecf3; }
-    .controls { margin-top: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .next {
       background: rgba(77,163,255,0.25);
       border: 1px solid rgba(77,163,255,0.7);
@@ -43,9 +88,7 @@
       font-weight: 700;
       font-size: 16px;
     }
-    .hidden { display: none; }
-    .header { display:flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .score { color:#a0a8b3; }
+
     select {
       background: rgba(255,255,255,0.05);
       color:#e7ecf3;
@@ -55,18 +98,27 @@
       font-size: 16px;
     }
 
+    .feedback { min-height: 24px; margin-top: 8px; color: #e7ecf3; }
+    .hidden { display: none; }
+
     /* Phase 1: responsive canvas in layout; drawing buffer handled by JS */
     canvas#viewer { width: 100%; height: auto; display: block; }
 
     /* Phase 2: visible focus styles for keyboard users */
     .btn:focus, .next:focus, select:focus { outline: 2px solid rgba(77,163,255,0.9); outline-offset: 2px; }
     .btn:focus-visible, .next:focus-visible, select:focus-visible { outline: 3px solid rgba(77,163,255,1); outline-offset: 2px; }
+
+    /* Phase 3: mobile spacing refinements */
+    @media (max-width: 620px) {
+      .wrap { margin: 16px; padding: 14px; }
+      .controls { gap: 8px; }
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="header">
-      <h1 style="margin:0;">Alkane Naming Quiz</h1>
+      <h1>Alkane Naming Quiz</h1>
       <div class="score">Score: <span id="score">0</span></div>
     </div>
 
@@ -212,6 +264,9 @@
         btn.className = 'btn';
         btn.textContent = opt;
         btn.addEventListener('click', () => checkAnswer(q, opt, btn));
+        // Improve accessibility of choices
+        btn.setAttribute('aria-pressed', 'false');
+        btn.addEventListener('click', () => btn.setAttribute('aria-pressed', 'true'), { once: true });
         choicesEl.appendChild(btn);
       });
     }
@@ -237,7 +292,7 @@
       nextBtn.textContent = (idx === questions.length - 1) ? 'See Final Score' : 'Next';
       nextBtn.classList.remove('hidden');
 
-      // Phase 2: move focus to Next to support keyboard and screen reader flow
+      // Accessibility: move focus to Next to support keyboard and screen reader flow
       nextBtn.focus();
     }
 
@@ -250,7 +305,7 @@
       nextBtn.textContent = 'Play Again';
       nextBtn.classList.remove('hidden');
 
-      // Phase 2: focus the Play Again button for accessibility
+      // Accessibility: focus the Play Again button
       nextBtn.focus();
     }
 
