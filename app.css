@@ -202,7 +202,9 @@ body {
   border-color: var(--color-accent-hover);
 }
 
-.hidden { display: none; }
+.hidden {
+  display: none !important;
+}
 
 /* Responsive canvas in layout; drawing buffer handled by JS */
 canvas#viewer { width: 100%; height: auto; display: block; }
