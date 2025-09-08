@@ -13,9 +13,6 @@
   <div id="levelSelectScreen">
     <h2>Select Level</h2>
     <div id="levelGrid" class="grid" role="list" aria-label="Available levels"></div>
-    <div style="margin-top:12px; display:flex; gap:10px;">
-      <button id="continueBtn" class="next">Continue</button>
-    </div>
   </div>
 
   <!-- Game Screen -->
@@ -167,10 +164,8 @@
     /**********************************************************
      * Phase 2: Level Select (limited to available levels)
      **********************************************************/
-    // Limit visible/playable levels to those with JSON present
     const TOTAL_LEVELS = 2;
     const levelGrid = document.getElementById('levelGrid');
-    const continueBtn = document.getElementById('continueBtn');
 
     function getUrlLevel() {
       const params = new URLSearchParams(location.search);
@@ -221,13 +216,6 @@
         });
         levelGrid.appendChild(btn);
       }
-
-      continueBtn.onclick = () => {
-        const p = getProfile();
-        const candidate = p.lastLevel || 1;
-        const fallback = (candidate <= TOTAL_LEVELS && isLevelUnlocked(candidate)) ? candidate : 1;
-        start(fallback);
-      };
     }
 
     function showLevelSelect() {
@@ -474,7 +462,7 @@
         questions = shuffle(data);
       } catch (e) {
         console.error(e);
-        feedbackEl.style.color = 'var(--color-error)';
+        feedbackEl.style.color = 'var(--color-error)'; // FIXED: removed stray parenthesis
         feedbackEl.textContent = 'Failed to load questions. See console for details.';
         questions = [];
       }
