@@ -162,22 +162,10 @@
     }
 
     /**********************************************************
-     * Phase 2: Level Select (limited to available levels)
+     * Level Select (no deep-linking)
      **********************************************************/
     const TOTAL_LEVELS = 2;
     const levelGrid = document.getElementById('levelGrid');
-
-    function getUrlLevel() {
-      const params = new URLSearchParams(location.search);
-      const lvl = parseInt(params.get('level'), 10);
-      return Number.isFinite(lvl) ? lvl : null;
-    }
-
-    function setUrlLevel(level) {
-      const params = new URLSearchParams(location.search);
-      params.set('level', String(level));
-      history.replaceState({}, '', `${location.pathname}?${params.toString()}`);
-    }
 
     function isLevelUnlocked(level) {
       if (level <= 1) return true;
@@ -449,7 +437,6 @@
       }
 
       currentLevel = level;
-      setUrlLevel(level);
 
       window._runStartedAt = Date.now();
 
@@ -462,7 +449,7 @@
         questions = shuffle(data);
       } catch (e) {
         console.error(e);
-        feedbackEl.style.color = 'var(--color-error)'; // FIXED: removed stray parenthesis
+        feedbackEl.style.color = 'var(--color-error)';
         feedbackEl.textContent = 'Failed to load questions. See console for details.';
         questions = [];
       }
@@ -488,14 +475,9 @@
       }
     });
 
-    // Initial routing: deep link or Level Select (guarded by TOTAL_LEVELS)
+    // Initial routing: always show Level Select (no deep linking)
     document.addEventListener('DOMContentLoaded', () => {
-      const urlLevel = getUrlLevel();
-      if (urlLevel && urlLevel <= TOTAL_LEVELS && isLevelUnlocked(urlLevel)) {
-        start(urlLevel);
-      } else {
-        showLevelSelect();
-      }
+      showLevelSelect();
     });
   </script>
 </body>
