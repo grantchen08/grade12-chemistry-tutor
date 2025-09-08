@@ -19,6 +19,12 @@
   <div class="wrap hidden">
     <div class="header">
       <h1>Alkane Naming Quiz</h1>
+      <div class="progress-wrap">
+        <div id="qCounter" class="q-counter">Question 0 of 0</div>
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
       <div class="score">Score: <span id="score">0</span></div>
     </div>
 
@@ -308,6 +314,22 @@
 
     window.addEventListener('resize', debounce(sizeCanvas, 150));
 
+    // Phase 2: Progress indicator
+    function updateProgress() {
+      const total = Math.max(questions.length, 1);
+      const current = Math.min(idx + 1, total);
+      const counterEl = document.getElementById('qCounter');
+      const fillEl = document.getElementById('progressFill');
+      if (counterEl) {
+        counterEl.textContent = `Question ${current} of ${total}`;
+      }
+      if (fillEl) {
+        // Fill represents completed questions; starts at 0% on first question.
+        const pct = Math.round(((current - 1) / total) * 100);
+        fillEl.style.width = `${pct}%`;
+      }
+    }
+
     function drawMol(molString) {
       const err = validateMolString(molString);
       if (err) { console.error('Invalid MOL:', err); return; }
@@ -341,6 +363,9 @@
         btn.addEventListener('click', () => btn.setAttribute('aria-pressed', 'true'), { once: true });
         choicesEl.appendChild(btn);
       });
+
+      // Update progress display on each question load
+      updateProgress();
     }
 
     function checkAnswer(q, selected, btnEl) {
@@ -457,6 +482,7 @@
       showGame();
       sizeCanvas();
       loadQuestion();
+      // updateProgress() is called from loadQuestion()
     }
 
     // Keyboard shortcuts: 1–4 answers, Enter for Next

@@ -133,6 +133,29 @@ body {
   line-height: 1.2;
 }
 
+/* Phase 2: Progress indicator styles */
+.progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+}
+.q-counter {
+  font-size: 14px;
+  color: var(--color-muted);
+}
+.progress-bar {
+  height: 8px;
+  background: var(--color-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--color-accent);
+  transition: width 200ms ease;
+}
+
 .score { color: var(--color-muted); }
 
 .row { margin-top: 12px; }
