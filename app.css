@@ -184,6 +184,16 @@ body {
   min-height: 24px;       /* reserve space even when empty */
 }
 
+/* Phase 3: Subtle feedback pop animation for positive reinforcement */
+.feedback.pop { animation: fb-pop 300ms ease; }
+@keyframes fb-pop {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.6;
+  }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 /* Buttons */
 .btn {
   background: var(--btn-bg);

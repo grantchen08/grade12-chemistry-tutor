@@ -254,6 +254,53 @@
     const selectBtn = document.getElementById('selectBtn');
     const postActions = document.getElementById('postActions');
 
+    // Phase 3: streak and praise
+    let streak = 0;
+    const PRAISE = ["Nice!", "Great job!", "Correct!", "Well done!", "You got it!", "Awesome!"];
+    const CONFETTI_COLORS = ['#287DB0','#40A02B','#C7D11D','#f39c12','#e74c3c'];
+    function praiseText() {
+      return PRAISE[Math.floor(Math.random() * PRAISE.length)];
+    }
+    function celebrateIfStreak() {
+      // Enhanced frequency:
+      // - Bigger celebrations at 3, 5, and every 5 thereafter
+      // - Medium celebration at every multiple of 3 (3, 6, 9, ...)
+      if (streak === 3 || streak === 5 || (streak > 0 && streak % 5 === 0)) {
+        confettiBurst(64, 1600, 1600);
+      } else if (streak % 3 === 0) {
+        confettiBurst(42, 1500, 1400);
+      }
+    }
+    // Longer-lasting, parameterized confetti burst
+    function confettiBurst(count = 36, durBase = 1400, durJitter = 1400, spreadVW = 24) {
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement('div');
+        const leftVW = 50 + (Math.random() * spreadVW - spreadVW / 2);
+        Object.assign(piece.style, {
+          position: 'fixed',
+          left: `${leftVW}vw`,
+          top: '-12px',
+          width: '7px',
+          height: '12px',
+          background: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+          opacity: '0.95',
+          zIndex: 9999,
+          borderRadius: '1px',
+          willChange: 'transform, opacity'
+        });
+        document.body.appendChild(piece);
+        const dx = (Math.random() * 2 - 1) * (40 + Math.random() * 60); // more horizontal drift
+        const rot = 360 + Math.random() * 900;
+        const duration = durBase + Math.random() * durJitter; // longer duration
+        const keyframes = [
+          { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
+          { transform: `translate(${dx}px, 100vh) rotate(${rot}deg)`, opacity: 0.8 }
+        ];
+        const timing = { duration, easing: 'cubic-bezier(0.2, 0.6, 0.2, 1)' };
+        piece.animate(keyframes, timing).onfinish = () => piece.remove();
+      }
+    }
+
     // Always attach handlers
     replayBtn.addEventListener('click', () => start(currentLevel));
     selectBtn.addEventListener('click', showLevelSelect);
@@ -314,11 +361,10 @@
 
     window.addEventListener('resize', debounce(sizeCanvas, 150));
 
-    // Phase 2: Progress indicator
-    // Progress fill shows COMPLETED questions (idx / total).
+    // Phase 2: Progress indicator (fill represents completed questions)
     function updateProgress() {
       const total = Math.max(questions.length, 1);
-      const completed = Math.min(idx, total);      // questions already completed
+      const completed = Math.min(idx, total);      // questions already answered
       const current = Math.min(idx + 1, total);    // 1-based index for counter
       const counterEl = document.getElementById('qCounter');
       const fillEl = document.getElementById('progressFill');
@@ -377,14 +423,31 @@
         score++;
         scoreEl.textContent = score;
         btnEl.classList.add('correct');
-        feedbackEl.textContent = 'Correct!';
+        // Phase 3: rotating praise + pop animation + streak confetti
+        streak++;
+        feedbackEl.textContent = praiseText();
         feedbackEl.style.color = 'var(--color-success)';
+        feedbackEl.classList.remove('pop'); void feedbackEl.offsetWidth; feedbackEl.classList.add('pop');
+        // More frequent confetti: a small burst every correct answer
+        confettiBurst(28, 1300, 1300);
+        // Plus milestone celebrations
+        celebrateIfStreak();
       } else {
         btnEl.classList.add('incorrect');
         const correctBtn = [...all].find(b => b.textContent === q.name);
         if (correctBtn) correctBtn.classList.add('correct');
         feedbackEl.textContent = 'Incorrect. The correct answer is ' + q.name + '.';
         feedbackEl.style.color = 'var(--color-error)';
+        // Phase 3: reset streak after a miss
+        streak = 0;
+      }
+
+      // If this was the last question, immediately show full progress.
+      if (idx === questions.length - 1) {
+        const fillEl = document.getElementById('progressFill');
+        const counterEl = document.getElementById('qCounter');
+        if (fillEl) fillEl.style.width = '100%';
+        if (counterEl) counterEl.textContent = `Question ${questions.length} of ${questions.length}`;
       }
 
       nextBtn.textContent = (idx === questions.length - 1) ? 'See Final Score' : 'Next';
@@ -398,6 +461,7 @@
 
       const timeMs = window._runStartedAt ? (Date.now() - window._runStartedAt) : null;
       const res = recordLevelResult(String(currentLevel), { score, maxScore: total, timeMs }, levelConfig);
+
       // Safety: ensure progress shows 100% at end-of-level.
       (function ensureProgressComplete() {
         const fillEl = document.getElementById('progressFill');
@@ -476,6 +540,7 @@
       score = 0;
       scoreEl.textContent = score;
       idx = 0;
+      streak = 0; // reset streak at the start of each level
 
       try {
         const data = await fetchQuestions(`./questions-level-${currentLevel}.json`);
@@ -490,7 +555,6 @@
       showGame();
       sizeCanvas();
       loadQuestion();
-      // updateProgress() is called from loadQuestion()
     }
 
     // Keyboard shortcuts: 1–4 answers, Enter for Next
