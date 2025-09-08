@@ -315,17 +315,18 @@
     window.addEventListener('resize', debounce(sizeCanvas, 150));
 
     // Phase 2: Progress indicator
+    // Progress fill shows COMPLETED questions (idx / total).
     function updateProgress() {
       const total = Math.max(questions.length, 1);
-      const current = Math.min(idx + 1, total);
+      const completed = Math.min(idx, total);      // questions already completed
+      const current = Math.min(idx + 1, total);    // 1-based index for counter
       const counterEl = document.getElementById('qCounter');
       const fillEl = document.getElementById('progressFill');
       if (counterEl) {
         counterEl.textContent = `Question ${current} of ${total}`;
       }
       if (fillEl) {
-        // Fill represents completed questions; starts at 0% on first question.
-        const pct = Math.round(((current - 1) / total) * 100);
+        const pct = Math.round((completed / total) * 100);
         fillEl.style.width = `${pct}%`;
       }
     }
@@ -397,6 +398,13 @@
 
       const timeMs = window._runStartedAt ? (Date.now() - window._runStartedAt) : null;
       const res = recordLevelResult(String(currentLevel), { score, maxScore: total, timeMs }, levelConfig);
+      // Safety: ensure progress shows 100% at end-of-level.
+      (function ensureProgressComplete() {
+        const fillEl = document.getElementById('progressFill');
+        const counterEl = document.getElementById('qCounter');
+        if (fillEl) fillEl.style.width = '100%';
+        if (counterEl) counterEl.textContent = `Question ${total} of ${total}`;
+      })();
 
       const imp = res.improvements;
       const improvementsText = [
