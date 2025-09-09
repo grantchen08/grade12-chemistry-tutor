@@ -385,12 +385,20 @@
       viewer.loadMolecule(mol);
     }
 
+    // Helper to clear any stale end-of-level Next handler
+    function clearNextOverrides() {
+      nextBtn.onclick = null;
+    }
+
     function loadQuestion() {
       feedbackEl.textContent = '';
       feedbackEl.style.color = 'var(--color-text)';
       choicesEl.innerHTML = '';
       nextBtn.classList.add('hidden');
       postActions.classList.add('hidden');
+
+      // Clear any stale end-of-level onclick to ensure "Next" is in-question behavior
+      clearNextOverrides();
 
       if (idx >= questions.length) {
         end();
@@ -488,7 +496,12 @@
       const isLast = currentLevel >= TOTAL_LEVELS;
       nextBtn.textContent = isLast ? 'Level Select' : 'Next Level';
       nextBtn.classList.remove('hidden');
-      nextBtn.onclick = () => {
+
+      // Ensure no old inline handler remains
+      clearNextOverrides();
+
+      // Attach a one-time handler for the end-of-level action
+      const endNavHandler = () => {
         if (isLast) {
           showLevelSelect();
         } else {
@@ -500,6 +513,7 @@
           start(nextLevel);
         }
       };
+      nextBtn.addEventListener('click', endNavHandler, { once: true });
 
       postActions.classList.remove('hidden');
       nextBtn.focus();
@@ -541,6 +555,9 @@
       scoreEl.textContent = score;
       idx = 0;
       streak = 0; // reset streak at the start of each level
+
+      // Important: clear any leftover end-of-level onclick
+      clearNextOverrides();
 
       try {
         const data = await fetchQuestions(`./questions-level-${currentLevel}.json`);

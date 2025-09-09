@@ -1,0 +1,109 @@
+--- a/index.html
++++ b/index.html
+@@ -120,6 +120,7 @@
+     const selectBtn = document.getElementById('selectBtn');
+     const postActions = document.getElementById('postActions');
+ 
+     // Phase 3: streak and praise
+     let streak = 0;
+     const PRAISE = ["Nice!", "Great job!", "Correct!", "Well done!", "You got it!", "Awesome!"];
++    const CONFETTI_COLORS = ['#287DB0','#40A02B','#C7D11D','#f39c12','#e74c3c'];
+     function praiseText() {
+       return PRAISE[Math.floor(Math.random() * PRAISE.length)];
+     }
+@@ -127,23 +128,39 @@
+     function celebrateIfStreak() {
+-      if (streak === 3 || streak === 5 || (streak > 0 && streak % 5 === 0)) {
+-        smallConfetti();
+-      }
++      // Enhanced frequency:
++      // - Bigger celebrations at 3, 5, and every 5 thereafter
++      // - Medium celebration at every multiple of 3 (3, 6, 9, ...)
++      if (streak === 3 || streak === 5 || (streak > 0 && streak % 5 === 0)) {
++        confettiBurst(64, 1600, 1600); // bigger & longer
++      } else if (streak % 3 === 0) {
++        confettiBurst(42, 1500, 1400); // medium
++      }
+     }
+-    function smallConfetti() {
+-      const n = 20;
+-      for (let i = 0; i < n; i++) {
+-        const piece = document.createElement('div');
+-        Object.assign(piece.style, {
+-          position: 'fixed',
+-          left: (50 + (Math.random() * 20 - 10)) + 'vw',
+-          top: '-10px',
+-          width: '6px',
+-          height: '10px',
+-          background: ['#287DB0','#40A02B','#C7D11D','#f39c12','#e74c3c'][i % 5],
+-          opacity: '0.9',
+-          zIndex: 9999
+-        });
+-        document.body.appendChild(piece);
+-        const dx = (Math.random() * 2 - 1) * 50;
+-        const t = 800 + Math.random() * 700;
+-        piece.animate(
+-          [
+-            { transform: `translate(0, 0) rotate(0deg)` },
+-            { transform: `translate(${dx}px, 100vh) rotate(${Math.random() * 720}deg)` }
+-          ],
+-          { duration: t, easing: 'ease-out' }
+-        ).onfinish = () => piece.remove();
+-      }
+-    }
++    // Longer-lasting, parameterized confetti burst
++    function confettiBurst(count = 36, durBase = 1400, durJitter = 1400, spreadVW = 24) {
++      for (let i = 0; i < count; i++) {
++        const piece = document.createElement('div');
++        const leftVW = 50 + (Math.random() * spreadVW - spreadVW / 2);
++        Object.assign(piece.style, {
++          position: 'fixed',
++          left: `${leftVW}vw`,
++          top: '-12px',
++          width: '7px',
++          height: '12px',
++          background: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
++          opacity: '0.95',
++          zIndex: 9999,
++          borderRadius: '1px',
++          willChange: 'transform, opacity'
++        });
++        document.body.appendChild(piece);
++        const dx = (Math.random() * 2 - 1) * (40 + Math.random() * 60); // more horizontal drift
++        const rot = 360 + Math.random() * 900;
++        const duration = durBase + Math.random() * durJitter; // longer duration
++        const keyframes = [
++          { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
++          { transform: `translate(${dx}px, 100vh) rotate(${rot}deg)`, opacity: 0.8 }
++        ];
++        const timing = { duration, easing: 'cubic-bezier(0.2, 0.6, 0.2, 1)' };
++        piece.animate(keyframes, timing).onfinish = () => piece.remove();
++      }
++    }
+ 
+     // Always attach handlers
+     replayBtn.addEventListener('click', () => start(currentLevel));
+@@ -235,6 +252,12 @@
+       if (selected === q.name) {
+         score++;
+         scoreEl.textContent = score;
+         btnEl.classList.add('correct');
+         // Phase 3: rotating praise + pop animation + streak confetti
+         streak++;
+         feedbackEl.textContent = praiseText();
+         feedbackEl.style.color = 'var(--color-success)';
+         feedbackEl.classList.remove('pop'); void feedbackEl.offsetWidth; feedbackEl.classList.add('pop');
+-        celebrateIfStreak();
++        // More frequent confetti: a small burst every correct answer
++        confettiBurst(28, 1300, 1300);   // mini burst
++        // Plus milestone celebrations
++        celebrateIfStreak();
+       } else {
+         btnEl.classList.add('incorrect');
+         const correctBtn = [...all].find(b => b.textContent === q.name);
+         if (correctBtn) correctBtn.classList.add('correct');
+         feedbackEl.textContent = 'Incorrect. The correct answer is ' + q.name + '.';
+         feedbackEl.style.color = 'var(--color-error)';
+         // Phase 3: reset streak after a miss
+         streak = 0;
+       }
