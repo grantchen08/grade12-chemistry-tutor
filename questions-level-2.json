@@ -1,77 +1,137 @@
 [
   {
+    "id": "l2-q-001",
+    "level": 2,
     "name": "2-methylpropane",
     "mol": "2-methylpropane\n  ChatGPT 09072025\n\n  4  3  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    1.5000    1.5000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  2  4  1  0\nM  END",
-    "distractors": ["isobutane", "1-methylpropane", "propylmethane"]
+    "distractors": ["isobutane", "1-methylpropane", "propylmethane"],
+    "tags": ["single-substituent", "longest-chain"],
+    "explain": "The longest chain is propane (3 carbons). The substituent is a methyl group on carbon 2. 1-methylpropane is an incorrect name as it would be butane."
   },
   {
+    "id": "l2-q-002",
+    "level": 2,
     "name": "2-methylbutane",
     "mol": "2-methylbutane\n  ChatGPT 09072025\n\n  5  4  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    1.5000    1.5000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  2  5  1  0\nM  END",
-    "distractors": ["isopentane", "3-methylbutane", "2-ethylpropane"]
+    "distractors": ["isopentane", "3-methylbutane", "2-ethylpropane"],
+    "tags": ["single-substituent", "longest-chain", "lowest-locant"],
+    "explain": "The longest chain is butane (4 carbons). Numbering from the right gives the methyl group the lowest locant (2). 3-methylbutane is incorrect numbering."
   },
   {
+    "id": "l2-q-003",
+    "level": 2,
     "name": "2-methylpentane",
     "mol": "2-methylpentane\n  ChatGPT 09072025\n\n  6  5  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    1.5000    1.5000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  2  6  1  0\nM  END",
-    "distractors": ["3-methylpentane", "2-ethylbutane", "isopentane"]
+    "distractors": ["3-methylpentane", "2-ethylbutane", "isopentane"],
+    "tags": ["single-substituent", "longest-chain", "lowest-locant"],
+    "explain": "The longest chain is pentane (5 carbons). The methyl group is on carbon 2 for the lowest locant. 4-methylpentane is incorrect numbering."
   },
   {
+    "id": "l2-q-004",
+    "level": 2,
     "name": "3-methylpentane",
     "mol": "3-methylpentane\n  ChatGPT 09072025\n\n  6  5  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    3.0000    1.5000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  3  6  1  0\nM  END",
-    "distractors": ["2-methylpentane", "3-ethylbutane", "isopentylmethane"]
+    "distractors": ["2-methylpentane", "3-ethylbutane", "isopentylmethane"],
+    "tags": ["single-substituent", "longest-chain"],
+    "explain": "The longest chain is pentane (5 carbons). The methyl group is on carbon 3. Numbering from either end gives 3."
   },
   {
+    "id": "l2-q-005",
+    "level": 2,
     "name": "2-methylhexane",
     "mol": "2-methylhexane\n  ChatGPT 09072025\n\n  7  6  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    1.5000    1.5000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  2  7  1  0\nM  END",
-    "distractors": ["3-methylhexane", "2-ethylpentane", "n-hexylmethane"]
+    "distractors": ["3-methylhexane", "2-ethylpentane", "n-hexylmethane"],
+    "tags": ["single-substituent", "longest-chain", "lowest-locant"],
+    "explain": "The longest chain is hexane (6 carbons). The methyl group is on carbon 2 for the lowest locant. 5-methylhexane is incorrect numbering."
   },
   {
+    "id": "l2-q-006",
+    "level": 2,
     "name": "3-methylhexane",
     "mol": "3-methylhexane\n  ChatGPT 09072025\n\n  7  6  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    3.0000    1.5000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  3  7  1  0\nM  END",
-    "distractors": ["2-methylhexane", "3-ethylpentane", "isohexane"]
+    "distractors": ["2-methylhexane", "3-ethylpentane", "isohexane"],
+    "tags": ["single-substituent", "longest-chain", "lowest-locant"],
+    "explain": "The longest chain is hexane (6 carbons). Numbering from the left gives the methyl group the lowest locant (3). 4-methylhexane is incorrect numbering."
   },
   {
+    "id": "l2-q-007",
+    "level": 2,
     "name": "2-methylheptane",
     "mol": "2-methylheptane\n  ChatGPT 09072025\n\n  8  7  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    9.0000    0.0000    0.0000 C   0  0\n    1.5000    1.5000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  6  7  1  0\n  2  8  1  0\nM  END",
-    "distractors": ["3-methylheptane", "2-ethylhexane", "heptylmethane"]
+    "distractors": ["3-methylheptane", "2-ethylhexane", "heptylmethane"],
+    "tags": ["single-substituent", "longest-chain", "lowest-locant"],
+    "explain": "The longest chain is heptane (7 carbons). The methyl group is on carbon 2 for the lowest locant. 6-methylheptane is incorrect numbering."
   },
   {
+    "id": "l2-q-008",
+    "level": 2,
     "name": "3-methylheptane",
     "mol": "3-methylheptane\n  ChatGPT 09072025\n\n  8  7  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    9.0000    0.0000    0.0000 C   0  0\n    3.0000    1.5000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  6  7  1  0\n  3  8  1  0\nM  END",
-    "distractors": ["4-methylheptane", "3-ethylhexane", "isoheptane"]
+    "distractors": ["4-methylheptane", "3-ethylhexane", "isoheptane"],
+    "tags": ["single-substituent", "longest-chain", "lowest-locant"],
+    "explain": "The longest chain is heptane (7 carbons). Numbering from the left gives the methyl group the lowest locant (3). 5-methylheptane is incorrect numbering."
   },
   {
+    "id": "l2-q-009",
+    "level": 2,
     "name": "4-methylheptane",
     "mol": "4-methylheptane\n  ChatGPT 09072025\n\n  8  7  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    9.0000    0.0000    0.0000 C   0  0\n    4.5000    1.5000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  6  7  1  0\n  4  8  1  0\nM  END",
-    "distractors": ["3-methylheptane", "4-ethylhexane", "isooctane"]
+    "distractors": ["3-methylheptane", "4-ethylhexane", "isooctane"],
+    "tags": ["single-substituent", "longest-chain"],
+    "explain": "The longest chain is heptane (7 carbons). The methyl group is on carbon 4. Numbering from either end gives 4."
   },
   {
+    "id": "l2-q-010",
+    "level": 2,
     "name": "2-methyloctane",
     "mol": "2-methyloctane\n  ChatGPT 09072025\n\n  9  8  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    9.0000    0.0000    0.0000 C   0  0\n   10.5000    0.0000    0.0000 C   0  0\n    1.5000    1.5000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  6  7  1  0\n  7  8  1  0\n  2  9  1  0\nM  END",
-    "distractors": ["7-methyloctane", "2-ethylheptane", "iso-octane"]
+    "distractors": ["7-methyloctane", "2-ethylheptane", "iso-octane"],
+    "tags": ["single-substituent", "longest-chain", "lowest-locant"],
+    "explain": "The longest chain is octane (8 carbons). The methyl group is on carbon 2 for the lowest locant. 7-methyloctane is incorrect numbering."
   },
   {
+    "id": "l2-q-011",
+    "level": 2,
     "name": "3-methyloctane",
     "mol": "3-methyloctane\n  ChatGPT 09072025\n\n  9  8  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    9.0000    0.0000    0.0000 C   0  0\n   10.5000    0.0000    0.0000 C   0  0\n    3.0000    1.5000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  6  7  1  0\n  7  8  1  0\n  3  9  1  0\nM  END",
-    "distractors": ["6-methyloctane", "3-ethylheptane", "n-octylmethane"]
+    "distractors": ["6-methyloctane", "3-ethylheptane", "n-octylmethane"],
+    "tags": ["single-substituent", "longest-chain", "lowest-locant"],
+    "explain": "The longest chain is octane (8 carbons). Numbering from the left gives the methyl group the lowest locant (3). 6-methyloctane is incorrect numbering."
   },
   {
+    "id": "l2-q-012",
+    "level": 2,
     "name": "4-methyloctane",
     "mol": "4-methyloctane\n  ChatGPT 09072025\n\n  9  8  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    9.0000    0.0000    0.0000 C   0  0\n   10.5000    0.0000    0.0000 C   0  0\n    4.5000    1.5000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  6  7  1  0\n  7  8  1  0\n  4  9  1  0\nM  END",
-    "distractors": ["5-methyloctane", "4-ethylheptane", "isooctane"]
+    "distractors": ["5-methyloctane", "4-ethylheptane", "isooctane"],
+    "tags": ["single-substituent", "longest-chain", "lowest-locant"],
+    "explain": "The longest chain is octane (8 carbons). Numbering from the left gives the methyl group the lowest locant (4). 5-methyloctane is incorrect numbering."
   },
   {
-    "name": "2-ethylhexane",
+    "id": "l2-q-013",
+    "level": 2,
+    "name": "3-methylheptane",
     "mol": "2-ethylhexane\n  ChatGPT 09072025\n\n  8  7  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    1.5000    1.5000    0.0000 C   0  0\n    1.5000    3.0000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  2  7  1  0\n  7  8  1  0\nM  END",
-    "distractors": ["3-methylheptane", "2-ethylpentane", "n-hexyl-ethane"]
+    "distractors": ["2-ethylhexane", "2-ethylpentane", "n-hexyl-ethane"],
+    "tags": ["single-substituent", "longest-chain", "parent-selection"],
+    "explain": "The longest chain is heptane (7 carbons), not hexane. The substituent is a methyl group at C3. Naming it 2-ethylhexane incorrectly uses a shorter parent chain."
   },
   {
+    "id": "l2-q-014",
+    "level": 2,
     "name": "3-ethylhexane",
     "mol": "3-ethylhexane\n  ChatGPT 09072025\n\n  8  7  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    3.0000    1.5000    0.0000 C   0  0\n    3.0000    3.0000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  3  7  1  0\n  7  8  1  0\nM  END",
-    "distractors": ["4-methylheptane", "3-ethylpentane", "isohexyl-ethane"]
+    "distractors": ["4-methylheptane", "3-ethylpentane", "isohexyl-ethane"],
+    "tags": ["single-substituent", "longest-chain", "lowest-locant"],
+    "explain": "The longest chain is hexane (6 carbons). The ethyl group is at C3 for the lowest locant. 4-ethylhexane is incorrect numbering."
   },
   {
+    "id": "l2-q-015",
+    "level": 2,
     "name": "4-ethylheptane",
     "mol": "4-ethylheptane\n  ChatGPT 09072025\n\n  9  8  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    9.0000    0.0000    0.0000 C   0  0\n    4.5000    1.5000    0.0000 C   0  0\n    4.5000    3.0000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  6  7  1  0\n  4  8  1  0\n  8  9  1  0\nM  END",
-    "distractors": ["5-methyloctane", "4-ethylhexane", "isoheptyl-ethane"]
+    "distractors": ["5-methyloctane", "4-ethylhexane", "isoheptyl-ethane"],
+    "tags": ["single-substituent", "longest-chain"],
+    "explain": "The longest chain is heptane (7 carbons). The ethyl group is on carbon 4. Numbering from either end gives 4."
   }
 ]
