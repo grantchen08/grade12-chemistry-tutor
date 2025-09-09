@@ -1,0 +1,166 @@
+[
+  {
+    "id": "l3-q-001",
+    "level": 3,
+    "name": "2,2-dimethylpropane",
+    "mol": "2,2-dimethylpropane\n  ChatGPT 09092025\n\n  5  4  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    1.5000    1.2000    0.0000 C   0  0\n    1.5000   -1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  2  4  1  0\n  2  5  1  0\nM  END",
+    "distractors": ["2-methylbutane", "3,3-dimethylpropane", "pentane"],
+    "tags": ["two-substituents", "lowest-set-of-locants"],
+    "explain": "Propane is the parent (3 carbons); two methyls on C2 give 2,2-dimethylpropane (neopentane)."
+  },
+  {
+    "id": "l3-q-002",
+    "level": 3,
+    "name": "2,3-dimethylbutane",
+    "mol": "2,3-dimethylbutane\n  ChatGPT 09092025\n\n  6  5  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    1.5000    1.2000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  2  5  1  0\n  3  6  1  0\nM  END",
+    "distractors": ["2,2-dimethylbutane", "3,3-dimethylbutane", "hexane"],
+    "tags": ["two-substituents", "lowest-set-of-locants"],
+    "explain": "Butane is the parent; placing methyls at C2 and C3 gives the lowest set of locants."
+  },
+  {
+    "id": "l3-q-003",
+    "level": 3,
+    "name": "3,3-dimethylpentane",
+    "mol": "3,3-dimethylpentane\n  ChatGPT 09092025\n\n  7  6  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n    3.0000   -1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  3  6  1  0\n  3  7  1  0\nM  END",
+    "distractors": ["2,2-dimethylpentane", "2,3-dimethylpentane", "heptane"],
+    "tags": ["two-substituents", "lowest-set-of-locants"],
+    "explain": "Pentane is the parent chain; both methyls on C3 (geminal) matches 3,3- and minimizes the set."
+  },
+  {
+    "id": "l3-q-004",
+    "level": 3,
+    "name": "2,4-dimethylpentane",
+    "mol": "2,4-dimethylpentane\n  ChatGPT 09092025\n\n  7  6  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    1.5000    1.2000    0.0000 C   0  0\n    4.5000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  2  6  1  0\n  4  7  1  0\nM  END",
+    "distractors": ["2,3-dimethylpentane", "3,4-dimethylpentane", "hexane"],
+    "tags": ["two-substituents", "lowest-set-of-locants"],
+    "explain": "Numbering from the appropriate end gives methyl groups at C2 and C4, which is the lowest set."
+  },
+  {
+    "id": "l3-q-005",
+    "level": 3,
+    "name": "3,4-dimethylhexane",
+    "mol": "3,4-dimethylhexane\n  ChatGPT 09092025\n\n  8  7  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n    4.5000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  3  7  1  0\n  4  8  1  0\nM  END",
+    "distractors": ["2,3-dimethylhexane", "3,5-dimethylhexane", "heptane"],
+    "tags": ["two-substituents", "lowest-set-of-locants"],
+    "explain": "Hexane is the parent; methyls at C3 and C4 yield the lowest set of locants."
+  },
+  {
+    "id": "l3-q-006",
+    "level": 3,
+    "name": "2-ethyl-3-methylbutane",
+    "mol": "2-ethyl-3-methylbutane\n  ChatGPT 09092025\n\n  7  6  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    1.5000    1.2000    0.0000 C   0  0\n    1.5000    2.4000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  2  5  1  0\n  5  6  1  0\n  3  7  1  0\nM  END",
+    "distractors": ["3-ethyl-2-methylbutane", "3-ethylpentane", "3-methyl-2-ethylbutane"],
+    "tags": ["two-substituents", "alphabetization", "lowest-set-of-locants", "ethyl+methyl"],
+    "explain": "Butane is the parent. Substituents are ethyl at C2 and methyl at C3; list substituents alphabetically (ethyl before methyl)."
+  },
+  {
+    "id": "l3-q-007",
+    "level": 3,
+    "name": "3-ethyl-2-methylpentane",
+    "mol": "3-ethyl-2-methylpentane\n  ChatGPT 09092025\n\n  8  7  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n    3.0000    2.4000    0.0000 C   0  0\n    1.5000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  3  6  1  0\n  6  7  1  0\n  2  8  1  0\nM  END",
+    "distractors": ["2-ethyl-3-methylpentane", "3-ethyl-2-methylbutane", "2-methyl-3-ethylpentane"],
+    "tags": ["two-substituents", "alphabetization", "lowest-set-of-locants", "ethyl+methyl"],
+    "explain": "Pentane is the parent. Numbering gives ethyl at C3 and methyl at C2 for the lowest set; list ethyl before methyl alphabetically."
+  },
+  {
+    "id": "l3-q-008",
+    "level": 3,
+    "name": "4-ethyl-2-methylhexane",
+    "mol": "4-ethyl-2-methylhexane\n  ChatGPT 09092025\n\n  9  8  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    4.5000    1.2000    0.0000 C   0  0\n    5.7000    1.2000    0.0000 C   0  0\n    1.5000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  4  7  1  0\n  7  8  1  0\n  2  9  1  0\nM  END",
+    "distractors": ["2-ethyl-4-methylhexane", "4-methyl-2-ethylhexane", "3-ethyl-2-methylhexane"],
+    "tags": ["two-substituents", "alphabetization", "lowest-set-of-locants", "ethyl+methyl"],
+    "explain": "Hexane is the parent. Lowest-set numbering places ethyl at C4 and methyl at C2; substituents are listed alphabetically."
+  },
+  {
+    "id": "l3-q-009",
+    "level": 3,
+    "name": "2-ethyl-4-methylhexane",
+    "mol": "2-ethyl-4-methylhexane\n  ChatGPT 09092025\n\n  9  8  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    1.5000    1.2000    0.0000 C   0  0\n    1.5000    2.4000    0.0000 C   0  0\n    4.5000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  2  7  1  0\n  7  8  1  0\n  4  9  1  0\nM  END",
+    "distractors": ["4-ethyl-2-methylhexane", "2-methyl-4-ethylhexane", "3-ethyl-4-methylhexane"],
+    "tags": ["two-substituents", "alphabetization", "lowest-set-of-locants", "ethyl+methyl"],
+    "explain": "Hexane is the parent. Numbering gives ethyl at C2 and methyl at C4; ethyl precedes methyl in the name."
+  },
+  {
+    "id": "l3-q-010",
+    "level": 3,
+    "name": "3-ethyl-4-methylhexane",
+    "mol": "3-ethyl-4-methylhexane\n  ChatGPT 09092025\n\n  9  8  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n    3.0000    2.4000    0.0000 C   0  0\n    4.5000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  3  7  1  0\n  7  8  1  0\n  4  9  1  0\nM  END",
+    "distractors": ["4-ethyl-3-methylhexane", "3-ethyl-3-methylhexane", "3-ethylheptane"],
+    "tags": ["two-substituents", "alphabetization", "lowest-set-of-locants", "ethyl+methyl"],
+    "explain": "Hexane is the parent; ethyl at C3 and methyl at C4 give the lowest set. List substituents alphabetically."
+  },
+  {
+    "id": "l3-q-011",
+    "level": 3,
+    "name": "2,2-dimethylbutane",
+    "mol": "2,2-dimethylbutane\n  ChatGPT 20250909\n\n  6  5  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    1.5000    1.2000    0.0000 C   0  0\n    1.5000   -1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  2  5  1  0\n  2  6  1  0\nM  END",
+    "distractors": ["2,3-dimethylbutane", "3,3-dimethylbutane", "hexane"],
+    "tags": ["two-substituents", "lowest-set-of-locants"],
+    "explain": "Butane is the parent; both methyls are on C2 (geminal), giving 2,2-dimethylbutane."
+  },
+  {
+    "id": "l3-q-012",
+    "level": 3,
+    "name": "2,3-dimethylpentane",
+    "mol": "2,3-dimethylpentane\n  ChatGPT 20250909\n\n  7  6  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    1.5000    1.2000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  2  6  1  0\n  3  7  1  0\nM  END",
+    "distractors": ["2,4-dimethylpentane", "3,3-dimethylpentane", "hexane"],
+    "tags": ["two-substituents", "lowest-set-of-locants"],
+    "explain": "Pentane is the parent; numbering to minimize the set places methyls at C2 and C3."
+  },
+  {
+    "id": "l3-q-013",
+    "level": 3,
+    "name": "2,2-dimethylpentane",
+    "mol": "2,2-dimethylpentane\n  ChatGPT 20250909\n\n  7  6  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    1.5000    1.2000    0.0000 C   0  0\n    1.5000   -1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  2  6  1  0\n  2  7  1  0\nM  END",
+    "distractors": ["2,3-dimethylpentane", "3,3-dimethylpentane", "heptane"],
+    "tags": ["two-substituents", "lowest-set-of-locants"],
+    "explain": "Pentane is the parent; both methyls attach to C2 (geminal), giving 2,2-dimethylpentane."
+  },
+  {
+    "id": "l3-q-014",
+    "level": 3,
+    "name": "3,5-dimethylhexane",
+    "mol": "3,5-dimethylhexane\n  ChatGPT 20250909\n\n  8  7  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n    6.0000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  3  7  1  0\n  5  8  1  0\nM  END",
+    "distractors": ["3,4-dimethylhexane", "2,5-dimethylhexane", "heptane"],
+    "tags": ["two-substituents", "lowest-set-of-locants"],
+    "explain": "Hexane is the parent; methyl substituents are at C3 and C5 for the lowest set of locants."
+  },
+  {
+    "id": "l3-q-015",
+    "level": 3,
+    "name": "2-ethyl-3-methylpentane",
+    "mol": "2-ethyl-3-methylpentane\n  ChatGPT 20250909\n\n  8  7  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    1.5000    1.2000    0.0000 C   0  0\n    1.5000    2.4000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  2  6  1  0\n  6  7  1  0\n  3  8  1  0\nM  END",
+    "distractors": ["3-ethyl-2-methylpentane", "3-ethyl-3-methylpentane", "2-ethylhexane"],
+    "tags": ["two-substituents", "alphabetization", "lowest-set-of-locants", "ethyl+methyl"],
+    "explain": "Pentane is the parent. Numbering gives ethyl at C2 and methyl at C3 (lowest set). List substituents alphabetically: ethyl before methyl."
+  },
+  {
+    "id": "l3-q-016",
+    "level": 3,
+    "name": "3-ethyl-2-methylhexane",
+    "mol": "3-ethyl-2-methylhexane\n  ChatGPT 20250909\n\n  9  8  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n    3.0000    2.4000    0.0000 C   0  0\n    1.5000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  3  7  1  0\n  7  8  1  0\n  2  9  1  0\nM  END",
+    "distractors": ["2-ethyl-3-methylhexane", "3-methyl-2-ethylhexane", "3-ethylheptane"],
+    "tags": ["two-substituents", "alphabetization", "lowest-set-of-locants", "ethyl+methyl"],
+    "explain": "Hexane is the parent. Lowest-set numbering places ethyl at C3 and methyl at C2; list substituents alphabetically."
+  },
+  {
+    "id": "l3-q-017",
+    "level": 3,
+    "name": "4-ethyl-3-methylhexane",
+    "mol": "4-ethyl-3-methylhexane\n  ChatGPT 20250909\n\n  9  8  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    4.5000    1.2000    0.0000 C   0  0\n    5.7000    1.2000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  4  7  1  0\n  7  8  1  0\n  3  9  1  0\nM  END",
+    "distractors": ["3-ethyl-4-methylhexane", "4-ethyl-2-methylhexane", "4-ethylheptane"],
+    "tags": ["two-substituents", "alphabetization", "lowest-set-of-locants", "ethyl+methyl"],
+    "explain": "Hexane is the parent; numbering gives ethyl at C4 and methyl at C3 with the lowest set. Ethyl is listed before methyl alphabetically."
+  },
+  {
+    "id": "l3-q-018",
+    "level": 3,
+    "name": "2-ethyl-3-methylhexane",
+    "mol": "2-ethyl-3-methylhexane\n  ChatGPT 20250909\n\n  9  8  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    1.5000    1.2000    0.0000 C   0  0\n    1.5000    2.4000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  2  7  1  0\n  7  8  1  0\n  3  9  1  0\nM  END",
+    "distractors": ["3-ethyl-2-methylhexane", "2-methyl-3-ethylhexane", "2-ethylheptane"],
+    "tags": ["two-substituents", "alphabetization", "lowest-set-of-locants", "ethyl+methyl"],
+    "explain": "Hexane is the parent. Lowest-set numbering places ethyl at C2 and methyl at C3; list substituents alphabetically."
+  }
+]
+
+
