@@ -26,6 +26,8 @@
         </div>
       </div>
       <div class="score">Score: <span id="score">0</span></div>
+      <!-- Question ID indicator (shown during testing or when available) -->
+      <div id="qId" class="qid hidden" aria-label="Question identifier"></div>
     </div>
 
     <div class="row canvas-row">
@@ -253,6 +255,7 @@
     const replayBtn = document.getElementById('replayBtn');
     const selectBtn = document.getElementById('selectBtn');
     const postActions = document.getElementById('postActions');
+    const qIdEl = document.getElementById('qId');
 
     // Phase 3: streak and praise
     let streak = 0;
@@ -408,6 +411,15 @@
       drawMol(q.mol);
       sizeCanvas();
 
+      // Show Question ID if available, otherwise show a useful fallback
+      if (qIdEl) {
+        const displayId = (q && (q.id !== undefined && q.id !== null && String(q.id).trim() !== ''))
+          ? String(q.id)
+          : `L${currentLevel}-Q${idx + 1}`;
+        qIdEl.textContent = `ID: ${displayId}`;
+        qIdEl.classList.remove('hidden');
+      }
+
       const options = shuffle([q.name, ...q.distractors]);
       options.forEach(opt => {
         const btn = document.createElement('button');
@@ -517,6 +529,12 @@
 
       postActions.classList.remove('hidden');
       nextBtn.focus();
+
+      // Hide the question ID at end screen to avoid confusion
+      if (qIdEl) {
+        qIdEl.classList.add('hidden');
+        qIdEl.textContent = '';
+      }
     }
 
     nextBtn.addEventListener('click', () => {
@@ -536,6 +554,7 @@
         }
         const err = validateMolString(q.mol);
         if (err) throw new Error(`Invalid MOL at index ${i}: ${err}`);
+        // Optional q.id is allowed; no validation needed beyond type flexibility
       });
       return data;
     }
