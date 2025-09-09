@@ -11,9 +11,9 @@
   {
     "id": "l4-q-002",
     "level": 4,
-    "name": "4-ethylhexane",
-    "mol": "4-ethylhexane\n  ChatGPT 09092025\n\n  8  7  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    4.5000    1.2000    0.0000 C   0  0\n    5.7000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  4  7  1  0\n  7  8  1  0\nM  END",
-    "distractors": ["3-ethylhexane", "3,3-dimethylpentane", "heptane"],
+    "name": "3-ethylhexane",
+    "mol": "3-ethylhexane\n  ChatGPT 09092025\n\n  8  7  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    4.5000    1.2000    0.0000 C   0  0\n    5.7000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  4  7  1  0\n  7  8  1  0\nM  END",
+    "distractors": ["4-ethylhexane", "3,3-dimethylpentane", "heptane"],
     "tags": ["longest-chain", "tie-breaker", "parent-selection"],
     "explain": "Hexane is the longest chain; the substituent is an ethyl at C4. Treating it as dimethylpentane uses a shorter parent."
   },
@@ -83,18 +83,18 @@
   {
     "id": "l4-q-010",
     "level": 4,
-    "name": "4-methylhexane",
-    "mol": "4-methylhexane\n  ChatGPT 09092025\n\n  7  6  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    4.5000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  4  7  1  0\nM  END",
-    "distractors": ["3-ethylpentane", "3-methylhexane", "heptane"],
+    "name": "3-methylhexane",
+    "mol": "3-methylhexane\n  ChatGPT 09092025\n\n  7  6  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    4.5000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  4  7  1  0\nM  END",
+    "distractors": ["3-ethylpentane", "4-methylhexane", "heptane"],
     "tags": ["longest-chain", "tie-breaker", "single-substituent"],
     "explain": "Keep the C6 parent chain; the methyl is at C4 by lowest-locant rules. Alternatives either shorten the parent or misnumber."
   },
   {
     "id": "l4-q-011",
     "level": 4,
-    "name": "3,5-dimethylhexane",
-    "mol": "3,5-dimethylhexane\n  ChatGPT 09092025\n\n  8  7  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n    6.0000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  3  7  1  0\n  5  8  1  0\nM  END",
-    "distractors": ["2,4-dimethylhexane", "4-ethylpentane", "3-ethylhexane"],
+    "name": "2,4-dimethylhexane",
+    "mol": "2,4-dimethylhexane\n  ChatGPT 09092025\n\n  8  7  0  0  0  0            999 V2000\n    0.0000    0.0000    0.0000 C   0  0\n    1.5000    0.0000    0.0000 C   0  0\n    3.0000    0.0000    0.0000 C   0  0\n    4.5000    0.0000    0.0000 C   0  0\n    6.0000    0.0000    0.0000 C   0  0\n    7.5000    0.0000    0.0000 C   0  0\n    3.0000    1.2000    0.0000 C   0  0\n    6.0000    1.2000    0.0000 C   0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  3  7  1  0\n  5  8  1  0\nM  END",
+    "distractors": ["3,5-dimethylhexane", "4-ethylpentane", "3-ethylhexane"],
     "tags": ["longest-chain", "tie-breaker", "two-substituents"],
     "explain": "Hexane is the parent; methyl groups are at C3 and C5. Alternatives either misnumber or incorrectly shorten the parent to pentane."
   },
